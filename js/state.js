@@ -39,7 +39,13 @@ window.C = window.C || {};
       constellation: { stars: [], lines: [] }, /* stars: { id, name, note }; lines: { to, label } drawn from you */
       exchange: { taught: 1.0, learned: 0.5 },
       limits: { shieldOn: false, budget: 3, windows: [], nightLockOn: false, nightTime: '23:00', coolingUntil: 0 },
-      completed: { quests: 0, flights: 0, missions: [] },
+      completed: { quests: 0, flights: 0, simulators: 0, missions: [] },
+      train: {
+        questDay: '', /* local date (yyyy-mm-dd) of the last Daily Quest; one quest earns XP per day */
+        pending: [], /* [{ id, skill, mark }] Solo Flight papers sent for peer marking */
+        nudged: [], /* Star Chart question ids that already nudged Persevering, so it cannot be farmed */
+        published: [] /* [{ title, licence }] chapters offered for peer review */
+      },
       settings: { reducedMotion: prefersReducedMotion() },
       clock: '9:41'
     };
@@ -119,13 +125,13 @@ window.C = window.C || {};
     },
 
     /* One reward for agent-free practice or a confirmed meeting. Time in the app never calls this.
-       opts: { xp, stat, together (hours) }. Returns { rankedUp: rank or null } so the game layer (M7) can play Ascend. */
+       opts: { xp, stat, together (hours), points (stat points when they differ from xp, e.g. a struggle timer with no XP) }. Returns { rankedUp: rank or null } so the game layer (M7) can play Ascend. */
     award: function (opts) {
       var before = rankFor(state.xp, state.exchange.taught);
       state.xp += opts.xp || 0;
       if (opts.together) state.week.togetherHours = Math.round((state.week.togetherHours + opts.together) * 10) / 10;
       if (opts.stat && state.stats[opts.stat] !== undefined) {
-        state.statPoints[opts.stat] += opts.xp || 0;
+        state.statPoints[opts.stat] += opts.points !== undefined ? opts.points : (opts.xp || 0);
         while (state.statPoints[opts.stat] >= LEVEL_POINTS && state.stats[opts.stat] < 10) {
           state.statPoints[opts.stat] -= LEVEL_POINTS;
           state.stats[opts.stat]++;
