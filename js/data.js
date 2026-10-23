@@ -96,10 +96,33 @@ C.data = {
     }
   },
 
-  /* Next crew meet-up shown on Home. The Crew screen (M3) fills in the rest of the crew. */
+  /* The crew (S4). Six members including the user, who is added by the screen. Fictional first names from several regions. */
   crew: {
     name: 'Northgate Orbit',
-    nextMeetup: { place: 'City Library, room 2', when: 'Thursday 6 pm' }
+    nextMeetup: { place: 'City Library, room 2', when: 'Thursday 6 pm', hours: 1.5, note: 'A public place, open to everyone' },
+    members: [
+      { id: 'priya', name: 'Priya', color: 'violet',  line: 'Keeps the timer and the snacks' },
+      { id: 'tomas', name: 'Tom\u00e1s', color: 'teal',    line: 'Brings the paper and the pens' },
+      { id: 'amara', name: 'Amara', color: 'magenta', line: 'Asks the good questions' },
+      { id: 'mei',   name: 'Mei',   color: 'sky',     line: 'Always early, always prepared' },
+      { id: 'kofi',  name: 'Kofi',  color: 'ember',   line: 'Makes the quiet ones laugh' }
+    ],
+    past: [
+      { when: 'Thursday last week, 6 pm',  place: 'City Library, room 2',      note: 'Timed practice, then tea. 5 of 6 came.' },
+      { when: 'Saturday, two weeks ago',   place: 'Riverside Park, by the bandstand', note: 'A walk and talk. Everyone came.' },
+      { when: 'Thursday, three weeks ago', place: 'Old Market caf\u00e9, long table', note: 'First meet-up. We set the plan together.' }
+    ],
+    /* Signals: invites only a person can open. */
+    signalsIn: [
+      { id: 's1', from: 'tomas', plan: 'Study table at City Library, Saturday 10 am', note: 'Bring one thing you got wrong this week and we will fix it together.' },
+      { id: 's2', from: 'amara', plan: 'Cook lunch at Northgate Community Kitchen, Sunday 12 pm', note: 'I will bring the rice. You bring one vegetable.' }
+    ],
+    plans: [
+      { id: 'p1', text: 'Study table at City Library, Saturday 10 am' },
+      { id: 'p2', text: 'Walk and talk in Riverside Park, Sunday 4 pm' },
+      { id: 'p3', text: 'Practice hour at the University Quarter hub, Wednesday 7 pm' }
+    ],
+    reportReasons: ['Made me feel unsafe', 'Pushed or pressured me', 'Pretending to be someone else', 'Something else']
   },
 
   /* Items in the More sheet on Home (Section 4). */
@@ -110,5 +133,139 @@ C.data = {
     { label: 'Constellation',      note: 'Everyone you have met or taught',    route: 'constellation' },
     { label: 'Night Watch',        note: 'Quiet late-night rooms',             route: 'shield' },
     { label: 'Privacy & settings', note: 'What Constella knows about you',     route: 'privacy' }
+  ]
+};
+
+
+/* The Star Map (S3, S9). Harbour City is fictional. Clusters of fewer than 5 people are never drawn and never counted on screen. */
+C.data.map = {
+  /* A jittered 4 x 4 grid of corner points makes nine neighbourhoods (3 x 3 cells). */
+  grid: [
+    [[14, 22],  [122, 12],  [238, 24],  [346, 14]],
+    [[10, 142], [118, 132], [234, 146], [350, 136]],
+    [[16, 266], [126, 278], [230, 262], [344, 272]],
+    [[12, 386], [124, 394], [236, 384], [348, 392]]
+  ],
+  hoods: [
+    { id: 'hillside',    name: 'Hillside',           cell: [0, 0] },
+    { id: 'northgate',   name: 'Northgate',          cell: [0, 1] },
+    { id: 'eastfield',   name: 'Eastfield',          cell: [0, 2] },
+    { id: 'university',  name: 'University Quarter', cell: [1, 0] },
+    { id: 'oldmarket',   name: 'Old Market',         cell: [1, 1] },
+    { id: 'riverside',   name: 'Riverside',          cell: [1, 2] },
+    { id: 'westdock',    name: 'Westdock',           cell: [2, 0] },
+    { id: 'harbourfront', name: 'Harbourfront',      cell: [2, 1] },
+    { id: 'docklands',   name: 'Docklands',          cell: [2, 2] }
+  ],
+  home: { hood: 'northgate', dx: 14, dy: 38 }, /* where the soft ring sits: a rough area, never a pin */
+
+  /* people: only those set to Visible are ever named. count includes everyone else (counted only). */
+  clusters: [
+    { id: 'c1',  goal: 'exam',       hood: 'northgate',  count: 22, dx: -30, dy: -12, women: false, people: [
+      ['Sofia', 'Chemistry final in March'], ['Kenji', 'Entrance exam in June'], ['Lena', 'Nursing board exam'], ['Mateo', 'Maths resit'], ['Ngozi', 'Accountancy part 2']] },
+    { id: 'c2',  goal: 'code',       hood: 'northgate',  count: 9,  dx: 34,  dy: 2,   women: false, people: [
+      ['Dmitri', 'First small web page'], ['Aisha', 'Loops and lists'], ['Carlos', 'Moving from spreadsheets']] },
+    { id: 'c3',  goal: 'language',   hood: 'oldmarket',  count: 31, dx: 0,   dy: -18, women: false, people: [
+      ['Hana', 'Spanish, beginner'], ['Jonas', 'English, speaking'], ['Fatima', 'French for work'], ['Ravi', 'Japanese, beginner'], ['Ines', 'German, intermediate'], ['Olu', 'Portuguese, beginner']] },
+    { id: 'c4',  goal: 'job',        hood: 'university', count: 46, dx: -8,  dy: -22, women: false, people: [
+      ['Yuki', 'First graduate role'], ['Anil', 'Career change into design'], ['Zainab', 'Interview next week'], ['Marco', 'Returning after a break'], ['Chiara', 'Product roles'], ['Tunde', 'Public sector roles']] },
+    { id: 'c5',  goal: 'code',       hood: 'university', count: 58, dx: 30,  dy: 30,  women: false, people: [
+      ['Nikhil', 'Data basics'], ['Elena', 'First app'], ['Samir', 'Learning by building'], ['Britt', 'Back-end curious'], ['Kwame', 'Open source starter']] },
+    { id: 'c6',  goal: 'fit',        hood: 'riverside',  count: 27, dx: -4,  dy: -26, women: false, people: [
+      ['Gabriel', 'Couch to 5 km'], ['Mina', 'Weekend cycling'], ['Oskar', 'Swim twice a week'], ['Leila', 'Walking group'], ['Pedro', 'Park run club']] },
+    { id: 'c7',  goal: 'instrument', hood: 'riverside',  count: 8,  dx: 18,  dy: 36,  women: false, people: [
+      ['Anya', 'Piano, grade 3 piece'], ['Tariq', 'Acoustic guitar'], ['Noor', 'Violin, restarting']] },
+    { id: 'c8',  goal: 'exam',       hood: 'hillside',   count: 12, dx: 8,   dy: 6,   women: false, people: [
+      ['Ayo', 'Medical school entry'], ['Freya', 'Architecture exam'], ['Bilal', 'Civil service test'], ['Mei Ling', 'Language certificate']] },
+    { id: 'c9',  goal: 'cook',       hood: 'harbourfront', count: 19, dx: 0, dy: 0,   women: false, people: [
+      ['Giulia', 'Bread from scratch'], ['Kofi A.', 'Weeknight stews'], ['Sana', 'Cooking for one'], ['Luis', 'No more takeaways'], ['Wren', 'Preserving and pickling']] },
+    { id: 'c10', goal: 'language',   hood: 'eastfield',  count: 7,  dx: 0,   dy: 4,   women: false, people: [
+      ['Petra', 'Swedish, beginner'], ['Idris', 'Arabic, speaking'], ['Thuy', 'English for nursing']] },
+    /* Women-only clusters: shown only in the women-only view, and only women are listed. */
+    { id: 'w1',  goal: 'exam',       hood: 'northgate',  count: 10, dx: -6,  dy: 14,  women: true,  people: [
+      ['Aisha R.', 'Medical entrance'], ['Hana K.', 'Law finals'], ['Ines', 'Architecture exam'], ['Tamsin', 'Teaching qualification']] },
+    { id: 'w2',  goal: 'job',        hood: 'westdock',   count: 11, dx: 0,   dy: 0,   women: true,  people: [
+      ['Zainab', 'Returning to work'], ['Yuki', 'Engineering roles'], ['Ngozi', 'Interview practice'], ['Marta', 'First management role']] },
+    { id: 'w3',  goal: 'fit',        hood: 'hillside',   count: 16, dx: -10, dy: -8,  women: true,  people: [
+      ['Amani', 'Trail walking'], ['Sigrid', 'Evening runs'], ['Dalia', 'Strength basics'], ['Rosa', 'Swim club']] },
+    { id: 'w4',  goal: 'cook',       hood: 'oldmarket',  count: 9,  dx: 0,   dy: 24,  women: true,  people: [
+      ['Aiko', 'Dumplings from scratch'], ['Beatriz', 'Family stews'], ['Nadia', 'Baking basics']] }
+  ],
+
+  /* Pre-written human messages, by goal. w picks a speaker from the cluster's named people (w mod number of names). */
+  chat: {
+    exam: [
+      [0, 'Anyone doing past papers this week? I am stuck on timing, not the content.'],
+      [1, 'Same. I set a kitchen timer and it helped a lot, strange but true.'],
+      [2, 'Library room 2 is free on Thursday evening if people want a table.'],
+      [3, 'I will come. Plain pen, no laptop. I want to practise how the real day feels.'],
+      [0, 'That is the whole point for me too. Two hours with no phone on the table.'],
+      [2, 'Can someone who has sat this exam say how the last half hour felt?'],
+      [1, 'Rushed. Read the questions twice at the start, it saves time later.']
+    ],
+    language: [
+      [0, 'Looking for someone to talk to for twenty minutes a week. Slowly, with no translating.'],
+      [1, 'Same. I can do greetings and food. I get nervous past that.'],
+      [2, 'There is a swap on Saturday morning. Table by the window.'],
+      [3, 'I will come. I can help with English if you help with my pronunciation.'],
+      [1, 'Nervous is normal. The first ten minutes are the worst, then it gets easier.'],
+      [0, 'I wrote ten sentences by hand yesterday. Very bad handwriting, very proud.'],
+      [2, 'Bring them on Saturday and we will read each other\u2019s.']
+    ],
+    instrument: [
+      [0, 'Does anyone else\u2019s hands forget everything the second someone is listening?'],
+      [1, 'Every time. I play well for an empty room and freeze in front of two people.'],
+      [2, 'Let us fix that. One short piece each, for the group, on Sunday.'],
+      [0, 'Scary but yes. I will play my one good song.'],
+      [1, 'The community hall has a free room for an hour. No recording, just us.'],
+      [2, 'Tuning by ear only. Deal?'],
+      [0, 'Deal.']
+    ],
+    job: [
+      [0, 'I have an interview next week and I have not talked about my work out loud in months.'],
+      [1, 'Happy to be your first interviewer. Fifteen minutes, three questions.'],
+      [2, 'I will go after you. I want to answer without my notes.'],
+      [0, 'I always read from my notes. I wonder what happens if I do not.'],
+      [1, 'You pause, the pause feels huge, and then you carry on. That is all.'],
+      [3, 'Thursday evening at the study hub works for me.'],
+      [2, 'Same. People only, no scripts open.']
+    ],
+    code: [
+      [0, 'Stuck on loops for two days. Not after the answer, just a person to talk it through.'],
+      [1, 'Explain it out loud to me. Half the time the problem is in the explaining.'],
+      [2, 'There is a table at the hub on Wednesday. Paper first, keyboards later.'],
+      [0, 'Paper first? Honestly yes. I never plan before typing.'],
+      [1, 'We tried it last week. Drawing the steps took ten minutes and saved an hour.'],
+      [2, 'Count me in. I will bring graph paper.'],
+      [3, 'I will bring snacks. Brains need them.']
+    ],
+    cook: [
+      [0, 'Made bread from scratch for the first time. It was a brick. A tasty brick.'],
+      [1, 'The first loaf is always a brick. Mine could have been a doorstop.'],
+      [2, 'Anyone want to cook together on Sunday? Soup or stew, whatever people can bring.'],
+      [0, 'I will bring onions and a big pot.'],
+      [1, 'My neighbour taught me her stew. Three hours and no recipe.'],
+      [2, 'That is the one I want. Can we do that one?'],
+      [1, 'I will ask her. She loves an audience.']
+    ],
+    fit: [
+      [0, 'Run club on Saturday, 8 am by the bandstand. There is a slow group too.'],
+      [1, 'Slow is the only pace I have. See you there.'],
+      [2, 'First time showing up anywhere new on my own. A bit nervous.'],
+      [0, 'We will walk the first lap together. Look for the red cap.'],
+      [3, 'Does anyone want to do the library stairs after? Short but brutal.'],
+      [1, 'Yes. Then tea.'],
+      [2, 'Tea is the real goal.']
+    ]
+  },
+  chatTimes: ['6:02 pm', '6:05 pm', '6:11 pm', '6:14 pm', '6:20 pm', '6:31 pm', '6:40 pm'],
+
+  /* Shooting Star: public, member-hosted activities. offset = minutes from the demo clock; all within 2 hours. */
+  activities: [
+    { id: 'a1', title: 'Library study table',    place: 'City Library, ground floor table', host: 'Priya',  offset: 15,  going: 6 },
+    { id: 'a2', title: 'Park run club',          place: 'Riverside Park, by the bandstand', host: 'Gabriel', offset: 30, going: 14 },
+    { id: 'a3', title: 'Language swap',          place: 'The Blue Door caf\u00e9, Old Market', host: 'Hana', offset: 55, going: 9 },
+    { id: 'a4', title: 'Chess table',            place: 'Old Market square, stone tables',  host: 'Dmitri', offset: 80, going: 5 },
+    { id: 'a5', title: 'Community kitchen shift', place: 'Northgate Community Kitchen',     host: 'Amara',  offset: 105, going: 11 }
   ]
 };
