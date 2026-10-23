@@ -122,6 +122,17 @@ C.app = (function () {
     applyClock();
   }
 
+  /* Back to the seed state and the Welcome screen. Used by Reset demo and by Delete everything (S13). */
+  function resetAll(message) {
+    C.state.reset();
+    applyMotion(); applyClock();
+    var motion = document.getElementById('motionSwitch');
+    if (motion) motion.checked = !C.state.get().settings.reducedMotion;
+    if (message) C.ui.toast(message);
+    go(DEFAULT_ROUTE);
+    closeDemoOnPhone();
+  }
+
   /* ---------- Demo controls ---------- */
 
   function markDemo(id) {
@@ -151,6 +162,7 @@ C.app = (function () {
       C.state.get().settings.reducedMotion = !motion.checked;
       C.state.save();
       applyMotion();
+      if (current === 'privacy') render('privacy', true); /* its Reduced motion switch follows this one */
     });
 
     function later(label, milestone) {
@@ -166,14 +178,7 @@ C.app = (function () {
 
     var reset = el('button', {
       class: 'demo-btn danger', type: 'button',
-      onclick: function () {
-        C.state.reset();
-        applyMotion(); applyClock();
-        motion.checked = !C.state.get().settings.reducedMotion;
-        C.ui.toast('Demo reset');
-        go(DEFAULT_ROUTE);
-        closeDemoOnPhone();
-      }
+      onclick: function () { resetAll('Demo reset'); }
     }, el('span', { text: 'Reset demo' }));
 
     panel.appendChild(el('p', { class: 'demo-note', text: 'Demo controls: not part of the app' }));
@@ -223,5 +228,5 @@ C.app = (function () {
   /* Scripts are loaded with defer, so the DOM is ready by the time this runs. */
   start();
 
-  return { go: go, render: render, current: function () { return current; }, toggleDemo: toggleDemo, setClock: setClock };
+  return { go: go, render: render, current: function () { return current; }, toggleDemo: toggleDemo, setClock: setClock, applyMotion: applyMotion, resetAll: resetAll };
 })();

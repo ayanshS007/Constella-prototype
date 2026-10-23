@@ -9,8 +9,7 @@ C.screens = (function () {
 
   var milestone = {
     train: 'M4', orbits: 'M4',
-    shield: 'M5',
-    archive: 'M6', exchange: 'M6', missions: 'M6', constellation: 'M6', privacy: 'M6'
+    shield: 'M5'
   };
 
   function placeholder(route) {

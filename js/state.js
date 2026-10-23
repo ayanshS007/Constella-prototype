@@ -36,8 +36,12 @@ window.C = window.C || {};
         signalsSent: [] /* [{ to, plan, note }] */
       },
       people: { chatVerified: false, going: [], joinAsked: [] }, /* Star Map and Shooting Star choices */
-      constellation: { stars: [], lines: [] }, /* stars: { id, name, note }; lines: { to, label } drawn from you */
-      exchange: { taught: 1.0, learned: 0.5 },
+      constellation: { stars: [], lines: [] }, /* stars: { id, name, note, more: [] }; lines: { to, label } drawn from you, one per confirmed meeting */
+      exchange: {
+        taught: 1.0, learned: 0.5, /* hours; the balance is taught minus learned */
+        offers: [{ id: 'mine1', skill: 'Mental maths' }], /* what the user offers to teach (S10) */
+        sessions: [] /* [{ id, role: 'learn' or 'teach', skill, who, whoId, place, slot, state: 'booked' | 'rated' | 'done', mine, theirs }] */
+      },
       limits: { shieldOn: false, budget: 3, windows: [], nightLockOn: false, nightTime: '23:00', coolingUntil: 0,
                nightNoBuy: true, exceptionUntil: 0 }, /* times are epoch ms; the Shield screen turns them into demo-speed countdowns */
       completed: { quests: 0, flights: 0, simulators: 0, missions: [] },
@@ -143,6 +147,28 @@ window.C = window.C || {};
       state.rank = after.id;
       C.state.save();
       return { rankedUp: after !== before ? after : null };
+    },
+
+    /* A stable id for a person's first name, so the same person is one star wherever they turn up ("Tomás" and "tomas"). */
+    starId: function (name) {
+      var n = String(name || '');
+      try { n = n.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) { /* older browsers keep accents */ }
+      return n.toLowerCase().replace(/[^a-z0-9]/g, '');
+    },
+
+    /* A person becomes a star in the Constellation: someone you met, practised with or taught. Calling it again for the
+       same person adds what you did together instead of a second star. Returns the star. */
+    addStar: function (id, name, note) {
+      var stars = state.constellation.stars, star = null;
+      for (var i = 0; i < stars.length; i++) if (stars[i].id === id) star = stars[i];
+      if (!star) {
+        star = { id: id, name: name, note: note, more: [] };
+        stars.push(star);
+      } else if (note && star.note !== note && (star.more || []).indexOf(note) < 0) {
+        star.more = (star.more || []).concat(note);
+      }
+      C.state.save();
+      return star;
     },
 
     /* The end of the Awakening: save the choices and the starting stat levels. XP stays at 0. */

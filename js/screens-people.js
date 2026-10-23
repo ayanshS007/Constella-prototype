@@ -575,12 +575,18 @@ C.people = (function () {
 
   function isBlocked(id) { return C.state.get().crew.blocked.indexOf(id) >= 0; }
 
-  /* The two-sided scan. Also used by Landing Missions in a later milestone: pass onConfirmed to react. */
+  /* The two-sided scan. Also used by Landing Missions (S11): pass onConfirmed to react, mission: its title, and again: true to allow a member already scanned. */
   function openScan(opts) {
     opts = opts || {};
     var st = C.state.get();
     var crew = st.crew;
-    var candidates = D.crew.members.filter(function (m) { return !isBlocked(m.id) && crew.scanned.indexOf(m.id) < 0; });
+    var open = D.crew.members.filter(function (m) { return !isBlocked(m.id); });
+    var candidates = open.filter(function (m) { return crew.scanned.indexOf(m.id) < 0; });
+    /* A Landing Mission is done with someone you may already have scanned at this meet-up: it can scan them again. */
+    if (!candidates.length && opts.again) {
+      var met = function (m) { return st.constellation.lines.filter(function (l) { return l.to === m.id; }).length; };
+      candidates = open.slice().sort(function (a, b) { return met(a) - met(b); }); /* whoever you have met least */
+    }
     var body = el('div', { class: 'scan' });
     var sheet = null;
     if (!candidates.length) {
@@ -607,26 +613,37 @@ C.people = (function () {
     setTimeout(function () { tick(step2); }, 1400);
     setTimeout(function () {
       sheet.close();
-      confirmMeeting(who);
+      confirmMeeting(who, opts.mission);
       if (opts.onConfirmed) opts.onConfirmed(who);
     }, 1900);
   }
 
-  /* A confirmed meeting adds together hours and a Constellation line. Hours count once per meet-up. */
-  function confirmMeeting(who) {
+  /* A confirmed meeting adds together hours and a Constellation line. Hours count once per meet-up.
+     A scan done for a Landing Mission (mission = its title) adds its own star note and line, but no meeting hours or XP:
+     the mission pays its own XP on the Missions screen. */
+  function confirmMeeting(who, mission) {
     var st = C.state.get();
     var m = D.crew.nextMeetup;
+    if (mission) {
+      st.crew.scanned.indexOf(who.id) < 0 && st.crew.scanned.push(who.id);
+      st.constellation.lines.push({ to: who.id, label: 'Landing Mission: ' + mission });
+      C.state.addStar(who.id, who.name, 'Landing Mission: ' + mission);
+      return;
+    }
     var first = !st.crew.checkedIn;
-    st.crew.scanned.push(who.id);
-    if (!byId(st.constellation.stars, who.id)) st.constellation.stars.push({ id: who.id, name: who.name, note: 'Met at ' + m.place });
-    st.constellation.lines.push({ to: who.id, label: 'Met at ' + m.place + ', ' + m.when });
+    var again = st.crew.scanned.indexOf(who.id) >= 0;
+    if (!again) {
+      st.crew.scanned.push(who.id);
+      st.constellation.lines.push({ to: who.id, label: 'Met at ' + m.place + ', ' + m.when });
+    }
+    C.state.addStar(who.id, who.name, 'Met at ' + m.place);
     if (first) {
       st.crew.checkedIn = true;
       C.state.award({ xp: Math.round(C.state.XP.meetingHour * m.hours), stat: 'relating', together: m.hours });
       C.ui.toast('Meeting confirmed · +' + m.hours + ' together hours · +' + Math.round(C.state.XP.meetingHour * m.hours) + ' XP', 3600);
     } else {
       C.state.save();
-      C.ui.toast('Confirmed with ' + who.name + ' · a new line in your Constellation. Hours count once per meet-up.', 3600);
+      C.ui.toast(again ? 'Confirmed with ' + who.name + ' again. Hours count once per meet-up.' : 'Confirmed with ' + who.name + ' · a new line in your Constellation. Hours count once per meet-up.', 3600);
     }
     if (C.app.current() === 'crew') C.app.render('crew', true);
   }

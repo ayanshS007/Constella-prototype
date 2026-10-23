@@ -436,3 +436,113 @@ C.data.shield = {
     note: 'If you are in danger right now, contact your local emergency services.'
   }
 };
+
+
+/* Earth Archive (S8). The six entries below are the ones in PLAN.md Section 5, word for word in "evidence" and "source".
+   "people" and "skill" are written for the prototype. Every entry carries the prototype note: verify before launch. */
+C.data.archive = {
+  intro: 'How people fed, cleaned and looked after themselves before agents chose for them, checked against today\'s evidence.',
+  categories: ['Food', 'Hygiene', 'Sleep', 'First aid', 'Repair'],
+  note: 'Prototype content: verify before launch',
+  footer: 'No brands, no products, no shopping links. Nothing here is for sale.',
+  /* verdict: keep, adapt or drop. The badge shows the word as well as the colour. */
+  verdicts: {
+    keep:  { label: 'Keep',  line: 'Still holds up today' },
+    adapt: { label: 'Adapt', line: 'Keep the idea, change the method' },
+    drop:  { label: 'Drop',  line: 'Today’s evidence says do something else' }
+  },
+  entries: [
+    { id: 'hands', title: 'Washing hands with soap', category: 'Hygiene', verdict: 'keep',
+      people: 'Families washed their hands with soap and water before eating and after the toilet, and kept a bar of soap by every tap.',
+      evidence: 'Scrub with soap for at least 20 seconds, then rinse',
+      skill: 'Wash your hands now and hum a song you know from start to finish. That is about 20 seconds.',
+      source: 'US CDC, handwashing guidance' },
+    { id: 'whole', title: 'Cooking from whole ingredients', category: 'Food', verdict: 'keep',
+      people: 'Most meals were cooked at home from raw ingredients: vegetables, grains, beans, eggs, fish or meat, bought fresh and in season.',
+      evidence: 'Diets high in ultra-processed food are linked to worse health; cooking from whole foods keeps that choice in your hands',
+      skill: 'Cook one meal from ingredients you can name, such as lentils, rice and a chopped vegetable.',
+      source: 'The Lancet series on ultra-processed food, 2025' },
+    { id: 'fridge', title: 'Keeping the fridge cold', category: 'Food', verdict: 'keep',
+      people: 'Before fridges, families kept food in cool cellars and pantries and used salting, pickling and drying to keep it safe.',
+      evidence: 'Keep the fridge at 5 °C or below',
+      skill: 'Put a fridge thermometer on the middle shelf and check it reads 5 °C or below.',
+      source: 'UK Food Standards Agency' },
+    { id: 'sleep', title: 'A regular night\'s sleep', category: 'Sleep', verdict: 'keep',
+      people: 'People went to bed and got up with the light, at about the same time every day.',
+      evidence: 'Adults need 7 or more hours a night',
+      skill: 'Choose one wake-up time and keep it for a whole week, even on the weekend.',
+      source: 'US CDC / American Academy of Sleep Medicine' },
+    { id: 'butter', title: 'Butter on a burn', category: 'First aid', verdict: 'drop',
+      people: 'Many households rubbed butter or oil on a burn, believing it would soothe the skin.',
+      evidence: 'Cool the burn under cool running water for 20 minutes instead',
+      skill: 'Learn the rule now: cool running water, 20 minutes. Set a timer once, so you know how long that feels.',
+      source: 'UK NHS, burns and scalds' },
+    { id: 'mend', title: 'Mending clothes', category: 'Repair', verdict: 'adapt',
+      people: 'Families darned socks, patched knees and sewed on buttons instead of throwing clothes away.',
+      evidence: 'A basic stitch kit keeps clothes in use longer; learn one stitch',
+      skill: 'Learn the running stitch and use it to sew a button back on.',
+      source: '', sourceNote: 'No source needed: a skill entry with no health claim' }
+  ],
+  /* Elder Signals: recipes recorded by older members. Each opens the "Cook a family recipe" mission. */
+  elders: {
+    label: 'Recorded by a member, reviewed before publishing',
+    cards: [
+      { id: 'e1', title: 'Rosa’s lentil soup', by: 'Rosa', age: 78, mission: 'cook',
+        line: 'The soup my mother made every Friday, on the back burner while she did everything else.',
+        need: 'Lentils, an onion, two carrots, water, salt and a squeeze of lemon.',
+        tip: 'Cook the onion slowly until it is soft and sweet. Do not rush that part.' },
+      { id: 'e2', title: 'Tunde’s rice and greens', by: 'Tunde', age: 81, mission: 'cook',
+        line: 'A pot we ate after the long walk home from the market, with whatever greens were fresh.',
+        need: 'Rice, a bunch of greens, garlic, an onion, oil and salt.',
+        tip: 'Wash the rice until the water runs clear, then leave the lid on and let it be.' }
+    ]
+  }
+};
+
+
+/* Light Exchange (S10): hours, not money. Eight offers from other members, all fictional. */
+C.data.exchange = {
+  debtLimit: 2, /* prototype value: hours the balance may dip below zero; you pay it back by teaching */
+  offers: [
+    { id: 'x1', name: 'Jonas', teach: 'Spreadsheet basics',       want: 'Public speaking' },
+    { id: 'x2', name: 'Hana',  teach: 'Spanish for beginners',    want: 'Bread baking' },
+    { id: 'x3', name: 'Tunde', teach: 'Basic guitar chords',      want: 'Sewing on a button' },
+    { id: 'x4', name: 'Ines',  teach: 'Reading a paper map',      want: 'Basic first aid' },
+    { id: 'x5', name: 'Kenji', teach: 'Chess openings',           want: 'Conversational English' },
+    { id: 'x6', name: 'Sofia', teach: 'Essay structure',          want: 'Cooking rice and stews' },
+    { id: 'x7', name: 'Mina',  teach: 'Your first 5 km run',      want: 'Learning to code' },
+    { id: 'x8', name: 'Wren',  teach: 'Pickling and preserving',  want: 'Writing a CV' }
+  ],
+  /* In the demo a member asks to learn each skill you list. These are crew members, so they join the same stars. */
+  askers: [
+    { id: 'amara', name: 'Amara' }, { id: 'kofi', name: 'Kofi' }, { id: 'priya', name: 'Priya' },
+    { id: 'tomas', name: 'Tomás' }, { id: 'mei', name: 'Mei' }
+  ],
+  places: [
+    { id: 'lib',     label: 'City Library, room 3',                 note: 'A bookable room, open to everyone' },
+    { id: 'cafe',    label: 'The Blue Door café, Old Market',  note: 'The long table by the window' },
+    { id: 'hub',     label: 'University Quarter hub, study room',   note: 'A public study room' },
+    { id: 'park',    label: 'Riverside Park, bandstand benches',    note: 'Outdoors, in daylight' },
+    { id: 'kitchen', label: 'Northgate Community Kitchen, side table', note: 'Staffed by members' }
+  ],
+  slots: ['Today, 6:00 pm', 'Tomorrow, 5:30 pm', 'Saturday, 10:00 am'],
+  theirRatings: [5, 4, 5, 5], /* what the other person rates the session, in turn; pre-written for the demo */
+  waitSeconds: 2 /* demo speed: how long the other person takes to rate */
+};
+
+
+/* Landing Missions (S11): this week, always with another person. */
+C.data.missions = {
+  week: 'This week',
+  items: [
+    { id: 'cook', title: 'Cook a family recipe with someone', icon: 'cook',
+      what: 'Pick a recipe that someone in a family has cooked for years. Cook it together, from the ingredients up.',
+      tip: 'Start with an Elder Signal in the Earth Archive.' },
+    { id: 'wayfind', title: 'Find a place across town without a map app', icon: 'map',
+      what: 'Choose a place on the other side of Harbour City. Reach it with a paper map, signs, or by asking people.',
+      tip: 'Two people find the way better than one. Take turns leading.' },
+    { id: 'teach', title: 'Teach someone one thing you know well', icon: 'relating',
+      what: 'Pick one small skill. Show it, let them try it, and watch them get it wrong once before they get it right.',
+      tip: 'Light Exchange counts a taught hour on its own too.' }
+  ]
+};
