@@ -80,6 +80,7 @@ C.app = (function () {
     var main = document.getElementById('view');
     var top = keepScroll && current === route.id ? main.scrollTop : 0;
     current = route.id;
+    if (!keepScroll && C.shield) C.shield.closeNightCard(); /* a new screen never sits under a stale Night Lock card */
     main.textContent = '';
     main.scrollTop = 0;
     try {
@@ -113,6 +114,12 @@ C.app = (function () {
   function applyClock() {
     var t = document.getElementById('statusTime');
     if (t) t.textContent = C.state.get().clock;
+  }
+
+  function setClock(text) {
+    C.state.get().clock = text;
+    C.state.save();
+    applyClock();
   }
 
   /* ---------- Demo controls ---------- */
@@ -153,6 +160,10 @@ C.app = (function () {
       }, el('span', { text: label }), el('span', { class: 'code', text: milestone }));
     }
 
+    function action(label, onclick) {
+      return el('button', { class: 'demo-btn action', type: 'button', onclick: onclick }, el('span', { text: label }));
+    }
+
     var reset = el('button', {
       class: 'demo-btn danger', type: 'button',
       onclick: function () {
@@ -171,7 +182,7 @@ C.app = (function () {
     panel.appendChild(el('h2', { class: 'demo-h', text: 'Scenes' }));
     panel.appendChild(el('div', { class: 'demo-list' },
       later('Fill a demo week', 'M7'),
-      later('Set time to 11:30 pm', 'M5'),
+      action('Set time to 11:30 pm', function () { closeDemoOnPhone(); C.shield.setLateTime(); }),
       later('Trigger Ascend', 'M7')));
     panel.appendChild(el('h2', { class: 'demo-h', text: 'Display' }));
     panel.appendChild(el('label', { class: 'demo-switch', for: 'motionSwitch' },
@@ -212,5 +223,5 @@ C.app = (function () {
   /* Scripts are loaded with defer, so the DOM is ready by the time this runs. */
   start();
 
-  return { go: go, render: render, current: function () { return current; }, toggleDemo: toggleDemo };
+  return { go: go, render: render, current: function () { return current; }, toggleDemo: toggleDemo, setClock: setClock };
 })();

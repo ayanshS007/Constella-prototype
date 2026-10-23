@@ -844,3 +844,57 @@ body.still .finder .sweep { animation: none; top: 50%; }
 .note { display: flex; flex-direction: column; gap: 8px; }
 .note-head { display: flex; align-items: center; gap: 10px; }
 .note-text { line-height: 1.5; }
+
+/* ======================================================================
+   M5: Shield (S7), the Night Lock card and Night Watch
+   ====================================================================== */
+
+.shield, .nightwatch { gap: 12px; }
+.limits-top { display: flex; align-items: center; gap: 14px; }
+.limits-top.on { border-color: rgba(46, 211, 192, 0.5); }
+.limits-line { font-size: 17px; font-weight: 700; line-height: 1.3; }
+.limit { display: flex; flex-direction: column; gap: 14px; }
+.limit.g-active, .limit.n-holding { border-color: rgba(46, 211, 192, 0.5); }
+.limit.g-starting { border-color: rgba(111, 183, 255, 0.55); }
+.limit.g-paused, .limit.n-paused { border-color: rgba(255, 138, 92, 0.5); }
+.limit-head { display: flex; align-items: center; gap: 12px; }
+.switch.flat { padding: 0; min-height: 44px; }
+.limit-status { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 12px; background: rgba(139, 108, 255, 0.08); border: 1px solid var(--panel-line); }
+.limit-status .btn { align-self: flex-start; }
+.timer-box { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+
+.range-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.range-out { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--gold); }
+.range { width: 100%; min-height: 32px; margin: 0; accent-color: var(--violet); cursor: pointer; }
+.range[disabled] { opacity: 0.5; cursor: not-allowed; }
+.chip[disabled] { opacity: 0.55; cursor: not-allowed; }
+.chip[aria-pressed="true"]::before { content: "\2713"; font-weight: 800; color: var(--teal); }
+
+.night-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.offer { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; border: 1px dashed var(--panel-line); }
+.offer h3 { font-size: 15px; }
+.offer-box { padding: 10px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); font-style: italic; }
+.shield-foot { text-align: center; padding: 0 6px; }
+
+.crisis { display: flex; flex-direction: column; gap: 10px; border-color: rgba(46, 211, 192, 0.45); }
+.crisis.picked { border-color: var(--teal); box-shadow: 0 0 26px rgba(46, 211, 192, 0.3); }
+.crisis a { color: var(--sky); font-weight: 600; text-underline-offset: 3px; }
+.crisis h2:focus { outline: none; }
+
+/* The calm full-screen Night Lock card, laid over the phone */
+.nightcard {
+  position: absolute; inset: 0; z-index: 3; pointer-events: auto; overflow-y: auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  padding: 52px 22px 28px; text-align: center;
+  background: radial-gradient(ellipse at 50% 18%, rgba(70, 60, 150, 0.55), transparent 62%), #050818;
+}
+.night-moon { width: 44px; height: 44px; border-radius: 50%; box-shadow: inset -13px -5px 0 0 #E7E3FF; background: transparent; filter: drop-shadow(0 0 14px rgba(185, 168, 255, 0.55)); }
+.night-text { display: flex; flex-direction: column; gap: 8px; max-width: 320px; }
+.night-text h2 { font-size: 22px; line-height: 1.3; }
+.night-text h2:focus { outline: none; }
+.night-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; }
+.night-actions .btn { width: 100%; }
+.night-actions .timer { width: 100%; }
+.night-wait { padding: 16px; border-radius: 14px; border: 1px solid var(--panel-line); background: var(--panel); }
+.night-live { max-width: 300px; min-height: 18px; }
+@media (max-height: 700px) { .nightcard { justify-content: flex-start; } }
