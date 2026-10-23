@@ -36,5 +36,79 @@ C.data = {
     { id: 'protostar', name: 'Protostar', xp: 600 },
     { id: 'star',      name: 'Star',      xp: 1500 },
     { id: 'supernova', name: 'Supernova', xp: 3000, teachingHours: 5 }
+  ],
+
+  city: { name: 'Harbour City' },
+
+  /* Section 5. icon: key into C.ui.icons. */
+  goals: [
+    { id: 'exam',       label: 'Pass a big exam',       icon: 'exam' },
+    { id: 'language',   label: 'Learn a language',      icon: 'language' },
+    { id: 'instrument', label: 'Play an instrument',    icon: 'instrument' },
+    { id: 'job',        label: 'Land a job',            icon: 'job' },
+    { id: 'code',       label: 'Learn to code',         icon: 'code' },
+    { id: 'cook',       label: 'Cook from scratch',     icon: 'cook' },
+    { id: 'fit',        label: 'Get fit with others',   icon: 'fit' }
+  ],
+
+  visibility: [
+    { id: 'hidden',  label: 'Hidden',       line: 'Nobody sees you on the Star Map. You can still look around.' },
+    { id: 'counted', label: 'Counted only', line: 'You add to a cluster\u2019s count. Your name and goal stay private.' },
+    { id: 'visible', label: 'Visible',      line: 'People in a cluster see your first name and your goal.' }
+  ],
+
+  /* The four stats. cls picks the colour in CSS; the label and icon carry the meaning too. */
+  stats: [
+    { id: 'relating',    label: 'Relating',    cls: 'relating',    icon: 'relating',    line: 'Being with people' },
+    { id: 'doing',       label: 'Doing',       cls: 'doing',       icon: 'doing',       line: 'Making and working things out' },
+    { id: 'thinking',    label: 'Thinking',    cls: 'thinking',    icon: 'thinking',    line: 'Forming your own view' },
+    { id: 'persevering', label: 'Persevering', cls: 'persevering', icon: 'persevering', line: 'Staying with the hard part' }
+  ],
+
+  /* The Awakening: four short agent-free tasks. All content is fixed and checked by the page, not generated. */
+  awakening: {
+    banner: 'Put your agent away. This one is just you.',
+    thinking: {
+      prompt: 'Should a city close its centre to cars one day a month? Give your own view in three lines.',
+      lines: 3
+    },
+    doing: {
+      prompt: 'Three sums, in your head. No phone, no paper.',
+      questions: [
+        { text: '38 + 47', answer: 85 },
+        { text: '9 \u00d7 8',  answer: 72 },
+        { text: '150 \u2212 68', answer: 82 }
+      ]
+    },
+    persevering: {
+      prompt: 'A snail climbs a 10 m well. Each day it climbs 3 m, and each night it slips back 2 m. On which day does it get out?',
+      answer: 8,
+      hint: 'Look at the last day on its own. Does the snail slip back once it is out?',
+      holdSeconds: 30
+    },
+    relating: {
+      prompt: 'Rate how true each line is for you. 1 is not at all, 5 is completely.',
+      statements: [
+        'Last week I had a real conversation without my agent in the middle.',
+        'Before asking my agent, I asked another person for help.',
+        'In the last month I made a plan with someone and kept it in person.'
+      ]
+    }
+  },
+
+  /* Next crew meet-up shown on Home. The Crew screen (M3) fills in the rest of the crew. */
+  crew: {
+    name: 'Northgate Orbit',
+    nextMeetup: { place: 'City Library, room 2', when: 'Thursday 6 pm' }
+  },
+
+  /* Items in the More sheet on Home (Section 4). */
+  more: [
+    { label: 'Earth Archive',      note: 'How people looked after themselves', route: 'archive' },
+    { label: 'Light Exchange',     note: 'Teach an hour, learn an hour',       route: 'exchange' },
+    { label: 'Missions',           note: 'This week, with other people',       route: 'missions' },
+    { label: 'Constellation',      note: 'Everyone you have met or taught',    route: 'constellation' },
+    { label: 'Night Watch',        note: 'Quiet late-night rooms',             route: 'shield' },
+    { label: 'Privacy & settings', note: 'What Constella knows about you',     route: 'privacy' }
   ]
 };
