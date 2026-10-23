@@ -1,0 +1,307 @@
+/* Constella prototype: shell styles. System fonts only, no external assets. */
+
+:root {
+  --space: #070B1F;
+  --panel: rgba(20, 26, 60, 0.72);
+  --panel-line: rgba(140, 160, 255, 0.28);
+  --violet: #8B6CFF;
+  --magenta: #E25BC9;
+  --teal: #2ED3C0;
+  --gold: #F5C451;
+  --sky: #6FB7FF;
+  --ember: #FF8A5C;
+  --text: #EEF1FF;
+  --text-dim: #A9B0D6;
+
+  --radius: 16px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --phone-w: 390px;
+  --phone-h: 844px;
+  --tabbar-h: 68px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--space);
+  color: var(--text);
+  font: 15px/1.45 var(--font);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: 24px; line-height: 1.2; }
+h2 { font-size: 20px; line-height: 1.25; }
+button { font: inherit; color: inherit; }
+.dim { color: var(--text-dim); }
+.small { font-size: 13px; }
+.eyebrow { font-size: 13px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+[disabled] { cursor: not-allowed; }
+
+/* Visible keyboard focus everywhere */
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+#view:focus { outline: none; }
+
+/* ---------- page: starfield and nebula ---------- */
+
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(60vmax 50vmax at 12% 18%, rgba(139, 108, 255, 0.20), transparent 70%),
+    radial-gradient(55vmax 45vmax at 88% 30%, rgba(226, 91, 201, 0.14), transparent 70%),
+    radial-gradient(60vmax 50vmax at 55% 95%, rgba(46, 211, 192, 0.12), transparent 70%),
+    var(--space);
+}
+
+.page-stars { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+
+.star {
+  position: absolute; display: block;
+  border-radius: 50%;
+  background: #fff;
+  opacity: var(--o, 0.7);
+  animation: twinkle var(--d, 5s) ease-in-out infinite;
+}
+.star.warm { background: #FFE9B8; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: var(--o, 0.7); transform: scale(1); }
+  50% { opacity: calc(var(--o, 0.7) * 0.25); transform: scale(0.8); }
+}
+
+/* Motion off: reduced-motion preference or the Demo controls switch */
+@media (prefers-reduced-motion: reduce) {
+  .star { animation: none; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
+body.still .star { animation: none; }
+body.still *, body.still *::before, body.still *::after { transition-duration: 0.01ms !important; }
+
+/* ---------- stage: phone frame and Demo controls ---------- */
+
+.stage {
+  min-height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  gap: 32px;
+  padding: 16px;
+}
+
+.phone {
+  position: relative;
+  width: var(--phone-w);
+  height: min(var(--phone-h), calc(100dvh - 32px));
+  min-height: 560px;
+  flex: none;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--space);
+  border: 1px solid var(--panel-line);
+  border-radius: 40px;
+  box-shadow:
+    0 0 0 8px #0B1030,
+    0 0 0 9px var(--panel-line),
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    0 0 90px rgba(139, 108, 255, 0.18);
+}
+
+.phone-bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: var(--space); }
+.phone-stars { position: absolute; inset: 0; }
+
+.nebula { position: absolute; border-radius: 50%; filter: blur(46px); opacity: 0.32; }
+.nebula.n1 { width: 320px; height: 320px; left: -120px; top: -60px; background: radial-gradient(circle, var(--violet), transparent 70%); }
+.nebula.n2 { width: 300px; height: 300px; right: -140px; top: 34%; background: radial-gradient(circle, var(--magenta), transparent 70%); opacity: 0.22; }
+.nebula.n3 { width: 340px; height: 340px; left: -60px; bottom: -140px; background: radial-gradient(circle, var(--teal), transparent 70%); opacity: 0.2; }
+
+.status {
+  flex: none;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 36px; padding: 6px 26px 0;
+  font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.status-right { display: flex; align-items: center; gap: 6px; }
+
+.view {
+  flex: 1; min-height: 0;
+  overflow-y: auto; overflow-x: hidden;
+  padding: 8px 16px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--panel-line) transparent;
+}
+
+.screen { display: flex; flex-direction: column; gap: 12px; }
+
+/* ---------- panels ---------- */
+
+.panel {
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 0 24px rgba(139, 108, 255, 0.12);
+}
+.placeholder { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---------- tab bar ---------- */
+
+.tabbar {
+  flex: none;
+  height: var(--tabbar-h);
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  padding: 6px 8px 10px;
+  background: rgba(10, 14, 40, 0.86);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--panel-line);
+}
+.phone.no-chrome .tabbar { display: none; }
+
+.tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  background: none; border: 0; border-radius: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.tab-icon { display: flex; }
+.tab-label { font-size: 12px; font-weight: 600; }
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); background: rgba(139, 108, 255, 0.18); box-shadow: inset 0 0 0 1px rgba(139, 108, 255, 0.45); }
+.tab.active .tab-icon { color: var(--violet); filter: drop-shadow(0 0 6px rgba(139, 108, 255, 0.8)); }
+
+/* ---------- toast, sheet ---------- */
+
+.toast-host {
+  position: absolute; left: 12px; right: 12px; bottom: calc(var(--tabbar-h) + 12px);
+  display: flex; flex-direction: column; gap: 8px; align-items: center;
+  pointer-events: none; z-index: 30;
+}
+.phone.no-chrome .toast-host { bottom: 20px; }
+.toast {
+  background: rgba(24, 31, 72, 0.96);
+  border: 1px solid var(--panel-line);
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  animation: toast-in 0.2s ease-out;
+  transition: opacity 0.3s;
+}
+.toast.out { opacity: 0; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.overlay-host { position: absolute; inset: 0; z-index: 40; pointer-events: none; }
+.scrim {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end;
+  background: rgba(3, 5, 18, 0.6);
+  pointer-events: auto;
+}
+.sheet { width: 100%; max-height: 80%; overflow-y: auto; border-radius: 22px 22px 0 0; background: rgba(16, 21, 52, 0.96); padding-bottom: 24px; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  background: none; border: 1px solid var(--panel-line); border-radius: 50%;
+  color: var(--text); cursor: pointer;
+}
+
+/* ---------- Demo controls ---------- */
+
+.demo {
+  flex: none;
+  width: 250px;
+  align-self: center;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 12px;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px dashed var(--panel-line);
+  border-radius: var(--radius);
+  scrollbar-width: thin;
+  scrollbar-color: var(--panel-line) transparent;
+}
+.demo-note {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--gold);
+}
+.demo-h { font-size: 13px; font-weight: 700; color: var(--text-dim); margin-top: 4px; }
+.demo-list { display: flex; flex-direction: column; gap: 3px; }
+.demo-btn {
+  display: flex; align-items: center; justify-content: flex-start; gap: 8px;
+  width: 100%; min-height: 30px;
+  padding: 4px 10px;
+  text-align: left; font-size: 13px;
+  background: rgba(139, 108, 255, 0.08);
+  border: 1px solid var(--panel-line); border-radius: 10px;
+  cursor: pointer;
+}
+.demo-btn .code { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; order: -1; min-width: 28px; }
+.demo-btn.action .code { order: 0; margin-left: auto; min-width: 0; }
+.demo-btn:hover:not([disabled]) { background: rgba(139, 108, 255, 0.2); }
+.demo-btn.active { background: rgba(139, 108, 255, 0.28); border-color: var(--violet); }
+.demo-btn[disabled] { opacity: 0.6; }
+.demo-btn.danger { margin-top: 4px; justify-content: center; border-color: rgba(255, 138, 92, 0.6); color: var(--ember); }
+.demo-btn.danger:hover { background: rgba(255, 138, 92, 0.14); }
+
+.demo-switch { display: flex; align-items: center; justify-content: space-between; min-height: 30px; padding: 0 4px 0 10px; font-size: 13px; cursor: pointer; position: relative; }
+.demo-switch input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.demo-switch .track {
+  width: 40px; height: 22px; border-radius: 999px; position: relative;
+  background: rgba(169, 176, 214, 0.25); border: 1px solid var(--panel-line);
+  transition: background 0.15s;
+}
+.demo-switch .track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--text); transition: transform 0.15s;
+}
+.demo-switch input:checked + .track { background: var(--violet); }
+.demo-switch input:checked + .track::after { transform: translateX(18px); }
+.demo-switch input:focus-visible + .track { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.demo-toggle { display: none; }
+
+.noscript { padding: 16px; text-align: center; }
+
+/* ---------- small windows ---------- */
+
+/* Narrow desktop windows: put the Demo controls under the phone */
+@media (max-width: 760px) and (min-width: 500px) {
+  .stage { flex-direction: column; }
+  .demo { width: var(--phone-w); max-height: none; }
+}
+
+/* Phone width: drop the frame, fill the screen, Demo controls behind a small button */
+@media (max-width: 499px) {
+  .stage { display: block; min-height: 0; padding: 0; }
+  .phone {
+    width: 100%; height: 100dvh; min-height: 0;
+    border: 0; border-radius: 0; box-shadow: none;
+  }
+  .demo-toggle {
+    display: block;
+    position: fixed; top: 6px; right: 8px; z-index: 60;
+    min-height: 32px; padding: 4px 12px;
+    font-size: 13px; font-weight: 600;
+    background: rgba(20, 26, 60, 0.92);
+    border: 1px solid var(--panel-line); border-radius: 999px;
+    cursor: pointer;
+  }
+  .demo {
+    display: none;
+    position: fixed; left: 12px; right: 12px; top: 44px; bottom: 12px; z-index: 55;
+    width: auto; max-height: none; align-self: auto;
+    background: rgba(12, 16, 44, 0.97);
+  }
+  .demo.open { display: flex; }
+  .status { padding-right: 78px; }
+}
