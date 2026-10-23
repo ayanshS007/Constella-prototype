@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Constella</title>
+<meta name="description" content="Constella: stay able, together. A clickable prototype.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="page-stars" id="pageStars" aria-hidden="true"></div>
+
+<div class="stage">
+  <div class="phone" id="phone">
+    <div class="phone-bg" aria-hidden="true">
+      <div class="nebula n1"></div>
+      <div class="nebula n2"></div>
+      <div class="nebula n3"></div>
+      <div class="phone-stars" id="phoneStars"></div>
+    </div>
+
+    <div class="status" aria-hidden="true">
+      <span class="status-time" id="statusTime">9:41</span>
+      <span class="status-right">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 18v-3M9 18v-6M14 18V9M19 18V6"/></svg>
+        <svg viewBox="0 0 28 14" width="22" height="11" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="1.5" width="22" height="11" rx="3"/><rect x="3.5" y="4" width="14" height="6" rx="1.2" fill="currentColor" stroke="none"/><path d="M25.5 5v4" stroke-linecap="round"/></svg>
+      </span>
+    </div>
+
+    <main class="view" id="view" tabindex="-1"></main>
+
+    <nav class="tabbar" id="tabbar" aria-label="Main"></nav>
+
+    <div class="toast-host" id="toastHost" aria-live="polite" role="status"></div>
+    <div class="overlay-host" id="overlayHost"></div>
+  </div>
+
+  <button class="demo-toggle" id="demoToggle" type="button" aria-expanded="false" aria-controls="demo">Demo</button>
+
+  <aside class="demo" id="demo" aria-label="Demo controls"></aside>
+</div>
+
+<noscript><p class="noscript">Constella needs JavaScript switched on to run this prototype.</p></noscript>
+
+<script src="js/data.js" defer></script>
+<script src="js/state.js" defer></script>
+<script src="js/ui.js" defer></script>
+<script src="js/screens.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
