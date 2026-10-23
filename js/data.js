@@ -269,3 +269,133 @@ C.data.map = {
     { id: 'a5', title: 'Community kitchen shift', place: 'Northgate Community Kitchen',     host: 'Amara',  offset: 105, going: 11 }
   ]
 };
+
+
+/* Training (S5, S6). All content is fixed and written by hand; nothing is generated. Fictional names only.
+   Demo timers are shortened and always labelled "demo speed" on screen. */
+C.data.train = {
+  quest: {
+    demoSeconds: 30,
+    realMinutes: 5,
+    /* One 5-minute agent-free rep per goal. */
+    reps: {
+      exam:       'Close the book. Write down everything you remember about one topic, then check what you missed.',
+      language:   'Say five sentences out loud in your language, about your day. No translating, no apps.',
+      instrument: 'Play one short piece from memory, slowly, with no tuner and no backing track.',
+      job:        'Out loud, describe one thing you did at work or study in three sentences, with no notes.',
+      code:       'On paper, draw the steps of a small program in boxes and arrows before you type anything.',
+      cook:       'Write a meal for tonight from what is in your kitchen, then work out the steps in order.',
+      fit:        'Do ten minutes of moves you know by heart. Count your own reps and rest on your own clock.'
+    },
+    fallback: 'Pick one thing you are learning and do it for five minutes with your agent put away.'
+  },
+
+  /* Solo Flights. stat: which stat the XP nudges. mark: the pre-written peer mark that arrives in the demo. */
+  flights: {
+    demoSeconds: 15,
+    skills: [
+      { id: 'handwriting', label: 'Handwriting',  stat: 'doing',    realMinutes: 10, mark: 71,
+        task: 'Copy a paragraph from a book onto paper, in your neatest hand, with a pen.' },
+      { id: 'maths',       label: 'Mental maths', stat: 'thinking', realMinutes: 10, mark: 78,
+        task: 'Work out twenty sums in your head and write only the answers on paper.' },
+      { id: 'map',         label: 'Map reading',  stat: 'doing',    realMinutes: 10, mark: 66,
+        task: 'Sketch the route from home to the library from memory, with three landmarks.' },
+      { id: 'language',    label: 'A language',   stat: 'thinking', realMinutes: 10, mark: 74,
+        task: 'Write ten sentences in the language you are learning, without looking anything up.' }
+    ],
+    markers: ['Tomás', 'Mei']
+  },
+
+  /* Star Charts: three chapters of three questions. Hints are plain nudges; the answer is shown last. */
+  chapters: [
+    {
+      id: 'ch1', title: 'Everyday numbers', topic: 'Mental maths',
+      author: 'Priya', reviewers: ['Tomás', 'Mei'], licence: 'CC BY 4.0',
+      intro: 'Three questions you can do in your head.',
+      questions: [
+        { id: 'ch1q1', text: 'A shirt costs 40. It is 25% off. What is the new price?', answer: '30',
+          hints: ['Find a quarter of 40 first.', 'A quarter of 40 is 10.', 'Take that 10 away from 40.'] },
+        { id: 'ch1q2', text: 'A bill of 96 is split equally between 8 people. How much does each person pay?', answer: '12',
+          hints: ['Halving three times is the same as dividing by 8.', '96 halved is 48, and 48 halved is 24.', '24 halved is 12.'] },
+        { id: 'ch1q3', text: 'A train leaves at 9:45 and the trip takes 2 hours 30 minutes. When does it arrive?', answer: '12:15',
+          hints: ['Add the hours first.', '9:45 plus 2 hours is 11:45.', 'Now add 30 minutes to 11:45.'] }
+      ]
+    },
+    {
+      id: 'ch2', title: 'The lighthouse', topic: 'Reading recall',
+      author: 'Amara', reviewers: ['Kofi', 'Priya'], licence: 'CC BY-SA 4.0',
+      intro: 'Read the short passage once. It hides when you start, so you answer from memory.',
+      passage: 'Mira kept the lighthouse on Gull Rock for nine winters. Every evening at dusk she climbed the 112 steps, trimmed the wick and lit the lamp. On the night of the great storm she stayed up until dawn so that three fishing boats could find the harbour. In the morning the crews left a basket of bread at her door.',
+      questions: [
+        { id: 'ch2q1', text: 'How many steps did Mira climb each evening?', answer: '112',
+          hints: ['It is a number, and it is over a hundred.', 'It was mentioned right after she climbed.', 'It starts with 11.'] },
+        { id: 'ch2q2', text: 'How many fishing boats found the harbour in the storm?', answer: '3 (three)',
+          hints: ['It is a small number.', 'It was the night of the great storm.', 'More than two, fewer than four.'] },
+        { id: 'ch2q3', text: 'What did the crews leave at her door?', answer: 'A basket of bread',
+          hints: ['It was left in the morning, as thanks.', 'It is something you can eat.', 'It is baked, and it came in a basket.'] }
+      ]
+    },
+    {
+      id: 'ch3', title: 'Thinking it through', topic: 'Everyday reasoning',
+      author: 'Mei', reviewers: ['Amara', 'Tomás'], licence: 'CC0',
+      intro: 'Short puzzles. Stay with them before you reach for a hint.',
+      questions: [
+        { id: 'ch3q1', text: 'Which is heavier: a kilogram of feathers or a kilogram of stones?', answer: 'Neither. They weigh the same.',
+          hints: ['Read the units carefully.', 'Both amounts are one kilogram.', 'The same unit and the same amount weigh the same.'] },
+        { id: 'ch3q2', text: 'What comes next? 2, 4, 8, 16, ?', answer: '32',
+          hints: ['Look at how each number relates to the one before it.', 'Each number is the one before it, doubled.', 'Double 16.'] },
+        { id: 'ch3q3', text: 'Today is Wednesday. What day will it be in 10 days?', answer: 'Saturday',
+          hints: ['Seven days from now is a Wednesday again.', 'That leaves 3 more days.', 'Count on from Wednesday: Thursday, Friday, then the third.'] }
+      ]
+    }
+  ],
+  struggleSeconds: 30,
+  licences: ['CC BY 4.0', 'CC BY-SA 4.0', 'CC0'],
+
+  /* Orbits: topic rooms of 4 to 8 people with a human host. size counts everyone, so seats left = size - joined. */
+  orbits: [
+    { id: 'o1', topic: 'Should exams allow notes?',            host: 'Priya',  when: 'Today, 6:30 pm', size: 8, joined: 5, view: 'Is it fair to ask people to remember what they can look up?',
+      names: ['Tomás', 'Amara', 'Sofia', 'Kenji'] },
+    { id: 'o2', topic: 'Telling a story in two minutes',       host: 'Hana',   when: 'Today, 7:15 pm', size: 6, joined: 4, view: 'What makes a short story worth listening to?',
+      names: ['Jonas', 'Ines', 'Olu'] },
+    { id: 'o3', topic: 'Interview answers without notes',      host: 'Zainab', when: 'Today, 8:00 pm', size: 6, joined: 3, view: 'What do you say when you freeze in an interview?',
+      names: ['Yuki', 'Marco'] },
+    { id: 'o4', topic: 'Is a walk the best way to think?',     host: 'Gabriel', when: 'Tomorrow, 7:30 am', size: 4, joined: 2, view: 'Where do you think best, and what makes it work?',
+      names: ['Mina'] },
+    { id: 'o5', topic: 'Cooking for one, without a recipe',    host: 'Giulia', when: 'Tomorrow, 6:00 pm', size: 8, joined: 6, view: 'What can you cook with no recipe, and who taught you?',
+      names: ['Sana', 'Luis', 'Wren', 'Kofi', 'Aiko'] },
+    { id: 'o6', topic: 'Reading a map and finding the way',    host: 'Dmitri', when: 'Saturday, 10:00 am', size: 5, joined: 2, view: 'When did you last find a place without a map app?',
+      names: ['Carlos'] }
+  ],
+
+  /* Simulators: three formats, one rubric. Notes are pre-written demo feedback from two named people. */
+  rubric: [
+    { id: 'clarity',    label: 'Clarity',    line: 'Could a listener follow what you meant?' },
+    { id: 'structure',  label: 'Structure',  line: 'Did it have a start, a middle and an end?' },
+    { id: 'listening',  label: 'Listening',  line: 'Did you answer what was asked?' },
+    { id: 'confidence', label: 'Confidence', line: 'Did you stay steady when it got hard?' }
+  ],
+  simulators: [
+    { id: 'interview', label: 'Mock interview', realMinutes: 10, demoSeconds: 20,
+      line: 'A person asks three questions about your work. Answer out loud, with no notes.',
+      scenario: 'Tell me about a time something went wrong and what you did next.',
+      notes: [
+        { from: 'Mei', note: 'You opened with the outcome, which made the rest easy to follow. Your middle part ran long. Try one sentence for the problem and one for the fix.', scores: { clarity: 4, structure: 3, listening: 4, confidence: 3 } },
+        { from: 'Kofi', note: 'You answered the question I asked, not the one you prepared. That was the best moment. When you paused, you looked down; look up and the pause feels calm.', scores: { clarity: 4, structure: 4, listening: 5, confidence: 3 } }
+      ] },
+    { id: 'talk', label: '3-minute talk', realMinutes: 3, demoSeconds: 20,
+      line: 'Give a three-minute talk to two or three people on something you know well.',
+      scenario: 'Teach us one thing you know well, in three minutes, with no slides.',
+      notes: [
+        { from: 'Amara', note: 'Your first line pulled me in. I lost the thread in the middle when you added a second idea. One idea, three examples, would land better.', scores: { clarity: 3, structure: 3, listening: 4, confidence: 4 } },
+        { from: 'Priya', note: 'Warm and clear. You spoke a little fast at the start and slowed once you saw us nodding. Start at that slower pace.', scores: { clarity: 4, structure: 4, listening: 4, confidence: 4 } }
+      ] },
+    { id: 'hard', label: 'Hard conversation', realMinutes: 5, demoSeconds: 20,
+      line: 'Practise saying something difficult to a person who plays the other side.',
+      scenario: 'You need to tell a friend you cannot lend them money this month.',
+      notes: [
+        { from: 'Tomás', note: 'You were kind and direct, and you did not over-explain. When I pushed back you almost gave in, then held. That held moment worked.', scores: { clarity: 4, structure: 3, listening: 5, confidence: 3 } },
+        { from: 'Mei', note: 'Good opening: you said what you could do instead. Watch the apology count; two is enough. I felt respected.', scores: { clarity: 4, structure: 4, listening: 4, confidence: 4 } }
+      ] }
+  ]
+};

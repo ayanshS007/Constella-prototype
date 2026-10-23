@@ -472,15 +472,17 @@ C.screens = (function () {
 
   function questCard(st) {
     var goal = goalLabel(st.user.goal);
+    var done = C.train && C.train.questDoneToday();
+    if (C.train) C.train.refreshStreak(); /* a missed day pauses the streak */
     return el('div', { class: 'panel card-row' },
       el('span', { class: 'card-ic ember', html: icons.flame }),
       el('div', { class: 'card-body' },
         el('h3', { text: 'Daily Quest' }),
-        el('p', { class: 'small', text: goal ? 'A 5-minute rep for “' + goal + '”, without your agent.' : 'A 5-minute rep, without your agent.' }),
+        el('p', { class: 'small', text: done ? 'Done for today. +' + C.state.XP.quest + ' XP earned.' : goal ? 'A 5-minute rep for “' + goal + '”, without your agent.' : 'A 5-minute rep, without your agent.' }),
         el('p', { class: 'small streak' },
           el('strong', { text: 'Streak: ' + st.streak + (st.streak === 1 ? ' day' : ' days') }),
           el('span', { class: 'dim', text: st.streakPaused ? '. Paused: you missed a day, and it picks up where you left off.' : '. Miss a day and the streak pauses. It never resets.' }))),
-      button('Start', 'primary compact', function () { C.app.go('train'); }));
+      button(done ? 'Open' : 'Start', done ? 'ghost compact' : 'primary compact', function () { C.train.open('quest'); }));
   }
 
   function meetupCard() {
