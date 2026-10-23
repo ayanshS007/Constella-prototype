@@ -13,6 +13,7 @@ C.data = {
     { id: 'train',        code: 'S5',  label: 'Train',              tab: 'train',  chrome: true },
     { id: 'orbits',       code: 'S6',  label: 'Orbits and Simulators', tab: 'train', chrome: true },
     { id: 'shield',       code: 'S7',  label: 'Shield',             tab: 'shield', chrome: true },
+    { id: 'nightwatch',   code: 'S7b', label: 'Night Watch',        tab: 'shield', chrome: true },
     { id: 'archive',      code: 'S8',  label: 'Earth Archive',      tab: '',       chrome: true },
     { id: 'shootingstar', code: 'S9',  label: 'Shooting Star',      tab: 'map',    chrome: true },
     { id: 'exchange',     code: 'S10', label: 'Light Exchange',     tab: '',       chrome: true },
@@ -131,7 +132,7 @@ C.data = {
     { label: 'Light Exchange',     note: 'Teach an hour, learn an hour',       route: 'exchange' },
     { label: 'Missions',           note: 'This week, with other people',       route: 'missions' },
     { label: 'Constellation',      note: 'Everyone you have met or taught',    route: 'constellation' },
-    { label: 'Night Watch',        note: 'Quiet late-night rooms',             route: 'shield' },
+    { label: 'Night Watch',        note: 'Quiet late-night rooms',             route: 'nightwatch' },
     { label: 'Privacy & settings', note: 'What Constella knows about you',     route: 'privacy' }
   ]
 };
@@ -398,4 +399,40 @@ C.data.train = {
         { from: 'Mei', note: 'Good opening: you said what you could do instead. Watch the apology count; two is enough. I felt respected.', scores: { clarity: 4, structure: 4, listening: 4, confidence: 4 } }
       ] }
   ]
+};
+
+
+/* The Shield (S7) and Night Watch. Demo speed: one minute on the clock is one second on screen, and every timer says so. */
+C.data.shield = {
+  secondsPerMinute: 1,
+  coolingMinutes: 10, /* the cooling-off before a limit takes effect, and the wait to lift one early */
+  exceptionMinutes: 20, /* what a crew member can approve */
+  budgetMax: 8, /* hours a day */
+  approver: 'priya', /* the crew member who approves in the demo; the answer comes after 3 seconds */
+  approveSeconds: 3,
+  windows: [
+    { id: 'w1', label: '7 am to 10 am', name: 'Study' },
+    { id: 'w2', label: '12 pm to 1 pm', name: 'Lunch with people' },
+    { id: 'w3', label: '6 pm to 9 pm', name: 'Crew time' }
+  ],
+  nightTimes: [
+    { id: '21:00', label: '9 pm' },
+    { id: '22:00', label: '10 pm' },
+    { id: '23:00', label: '11 pm' }
+  ],
+  lateClock: '11:30 pm',
+  /* Night Watch: quiet study rooms hosted by people. No phone numbers anywhere. */
+  rooms: [
+    { id: 'nw1', topic: 'Quiet study hour', host: 'Noor', when: 'Tonight, 11 pm to 1 am', joined: 5, size: 8,
+      names: ['Kofi', 'Sana', 'Luis', 'Wren'], line: 'Cameras off, voices low. Work on your own thing, together.' },
+    { id: 'nw2', topic: 'Reading and winding down', host: 'Daniel', when: 'Tonight, 11 pm to 1 am', joined: 4, size: 6,
+      names: ['Mei', 'Giulia', 'Tom\u00e1s'], line: 'Books, notes or a quiet cup of tea. Say hello, or don\u2019t.' }
+  ],
+  crisis: {
+    title: 'Your local crisis line',
+    line: 'Find one for your country at',
+    site: 'findahelpline.com',
+    url: 'https://findahelpline.com',
+    note: 'If you are in danger right now, contact your local emergency services.'
+  }
 };

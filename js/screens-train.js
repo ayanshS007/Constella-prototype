@@ -904,5 +904,5 @@ C.train = (function () {
     open: function (tab) { orbTab = tab || 'orbits'; C.app.go('orbits'); }
   };
 
-  return { open: open, refreshStreak: refreshStreak, questDoneToday: questDoneToday };
+  return { open: open, refreshStreak: refreshStreak, questDoneToday: questDoneToday, countdown: countdown };
 })();

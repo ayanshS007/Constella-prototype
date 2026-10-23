@@ -38,7 +38,8 @@ window.C = window.C || {};
       people: { chatVerified: false, going: [], joinAsked: [] }, /* Star Map and Shooting Star choices */
       constellation: { stars: [], lines: [] }, /* stars: { id, name, note }; lines: { to, label } drawn from you */
       exchange: { taught: 1.0, learned: 0.5 },
-      limits: { shieldOn: false, budget: 3, windows: [], nightLockOn: false, nightTime: '23:00', coolingUntil: 0 },
+      limits: { shieldOn: false, budget: 3, windows: [], nightLockOn: false, nightTime: '23:00', coolingUntil: 0,
+               nightNoBuy: true, exceptionUntil: 0 }, /* times are epoch ms; the Shield screen turns them into demo-speed countdowns */
       completed: { quests: 0, flights: 0, simulators: 0, missions: [] },
       train: {
         questDay: '', /* local date (yyyy-mm-dd) of the last Daily Quest; one quest earns XP per day */

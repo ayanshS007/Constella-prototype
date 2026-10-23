@@ -963,7 +963,7 @@ C.people = (function () {
 
   var api = {
     personCheck: personCheck, openScan: openScan, codePattern: codePattern,
-    avatar: avatar, byId: byId
+    avatar: avatar, byId: byId, clockMinutes: clockMinutes
   };
 
   C.screens.map = map;
