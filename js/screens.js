@@ -8,7 +8,6 @@ C.screens = (function () {
   var icons = C.ui.icons;
 
   var milestone = {
-    map: 'M3', crew: 'M3', shootingstar: 'M3',
     train: 'M4', orbits: 'M4',
     shield: 'M5',
     archive: 'M6', exchange: 'M6', missions: 'M6', constellation: 'M6', privacy: 'M6'
@@ -485,14 +484,16 @@ C.screens = (function () {
   }
 
   function meetupCard() {
-    var crew = C.data.crew, m = crew.nextMeetup;
+    var st = C.state.get(), m = C.data.crew.nextMeetup;
+    var done = st.crew.checkedIn;
     return el('div', { class: 'panel card-row' },
       el('span', { class: 'card-ic magenta', html: icons.calendar }),
       el('div', { class: 'card-body' },
         el('h3', { text: 'Next crew meet-up' }),
-        el('p', { class: 'small', text: crew.name }),
-        el('p', { class: 'small dim', text: m.place + ', ' + m.when })),
-      button('Open crew', 'ghost compact', function () { C.app.go('crew'); }));
+        el('p', { class: 'small', text: st.crew.name }),
+        el('p', { class: 'small dim', text: m.place + ', ' + m.when }),
+        done ? el('p', { class: 'small teal-text', text: 'Checked in: meeting confirmed' }) : null),
+      button(done ? 'Open crew' : 'Check in', 'ghost compact', function () { C.app.go('crew'); }));
   }
 
   function echoLine(week, last) {
@@ -505,6 +506,9 @@ C.screens = (function () {
   }
 
   /* ---------- the screen table ---------- */
+
+  /* Shared with the files that add screens in later milestones (plain scripts, one namespace). */
+  C.helpers = { button: button, goalLabel: goalLabel, hours: hours, delta: delta, statRows: statRows };
 
   var screens = {};
   C.data.routes.forEach(function (r) { screens[r.id] = placeholder(r); });

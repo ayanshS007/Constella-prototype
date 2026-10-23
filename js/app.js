@@ -74,9 +74,11 @@ C.app = (function () {
     else location.hash = '#/' + id;
   }
 
-  function render(id) {
+  /* keepScroll: redraw the same screen in place (after a Signal, a block, a check-in) without jumping to the top. */
+  function render(id, keepScroll) {
     var route = routesById[id] || routesById[DEFAULT_ROUTE];
     var main = document.getElementById('view');
+    var top = keepScroll && current === route.id ? main.scrollTop : 0;
     current = route.id;
     main.textContent = '';
     main.scrollTop = 0;
@@ -86,11 +88,12 @@ C.app = (function () {
       main.appendChild(el('div', { class: 'panel placeholder', text: 'This screen could not be drawn.' }));
       if (window.console) console.error(e);
     }
+    if (top) main.scrollTop = top;
     document.getElementById('phone').classList.toggle('no-chrome', !route.chrome);
     document.title = route.label.split(':')[0] + ' · Constella';
     markTab(route);
     markDemo(route.id);
-    try { main.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
+    if (!keepScroll) try { main.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
   }
 
   function onHashChange() {

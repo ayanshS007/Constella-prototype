@@ -49,6 +49,18 @@ C.ui = (function () {
     place:   svg('<path d="M12 21s-6-5.2-6-10a6 6 0 0 1 12 0c0 4.8-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/>'),
     more:    svg('<circle cx="5.5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="18.5" cy="12" r="1.4" fill="currentColor"/>'),
 
+    lock:    svg('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
+    unlock:  svg('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/>'),
+    shoot:   svg('<path d="M20 4l-3.1 6.2L11 11l5 1 .8 5.5L20 4z"/><path d="M12 12l-8 8M9 9l-4 4M15 15l-4 4"/>'),
+    flag:    svg('<path d="M6 21V4M6 5h11l-2 4 2 4H6"/>'),
+    block:   svg('<circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/>'),
+    send:    svg('<path d="M4 12 20 4l-4 16-4-7z"/><path d="M12 13l8-9"/>'),
+    scan:    svg('<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"/>'),
+    signal:  svg('<path d="M12 3v2M5.6 6.6 7 8M18.4 6.6 17 8"/><path d="M7 14a5 5 0 0 1 10 0v2l1.5 2h-13L7 16z"/><path d="M10 20.5h4"/>'),
+    edit:    svg('<path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/>'),
+    eye:     svg('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>'),
+    star:    svg('<path d="M12 3l2.4 5.6L20 9.3l-4.2 3.9 1.2 5.8L12 15.9 7 19l1.2-5.8L4 9.3l5.6-.7z"/>'),
+
     /* goals */
     exam:       svg('<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 14l2 2 3.5-4"/>'),
     language:   svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>'),

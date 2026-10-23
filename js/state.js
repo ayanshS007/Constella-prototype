@@ -25,8 +25,18 @@ window.C = window.C || {};
       activityToday: 0, /* agent-free reps today; Lumen brightens when this is above 0 */
       week: { agentHours: 31, assistedScore: 82, unaidedScore: 54, togetherHours: 0.5 },
       lastWeek: { agentHours: 33, assistedScore: 81, unaidedScore: 51, togetherHours: 0 }, /* for Your Echo */
-      crew: { name: 'Northgate Orbit' },
-      constellation: { stars: [], lines: [] },
+      statPoints: { relating: 0, doing: 0, thinking: 0, persevering: 0 }, /* progress toward the next level of each stat */
+      crew: {
+        name: 'Northgate Orbit',
+        checkedIn: false, /* this meet-up has been confirmed by a two-sided code check */
+        scanned: [], /* crew members whose code you have scanned at this meet-up */
+        blocked: [], reported: [],
+        signalsOpened: [], /* ids of received Signals opened with the person check */
+        signalReplies: [], /* [{ id, reply }]; arrays survive a save and load, empty objects would not */
+        signalsSent: [] /* [{ to, plan, note }] */
+      },
+      people: { chatVerified: false, going: [], joinAsked: [] }, /* Star Map and Shooting Star choices */
+      constellation: { stars: [], lines: [] }, /* stars: { id, name, note }; lines: { to, label } drawn from you */
       exchange: { taught: 1.0, learned: 0.5 },
       limits: { shieldOn: false, budget: 3, windows: [], nightLockOn: false, nightTime: '23:00', coolingUntil: 0 },
       completed: { quests: 0, flights: 0, missions: [] },
@@ -55,6 +65,7 @@ window.C = window.C || {};
   var state = seed();
 
   /* Prototype values (Section 7). Time in the app earns nothing. */
+  var LEVEL_POINTS = 60; /* prototype value: XP-event points needed for +1 on a stat */
   var XP = { quest: 20, flight: 30, simulator: 40, meetingHour: 50, teachingHour: 60, mission: 80, appTime: 0 };
 
   /* The rank for an XP total. Supernova also needs the teaching hours. */
@@ -105,6 +116,26 @@ window.C = window.C || {};
         fraction: next ? Math.max(0, Math.min(1, (state.xp - cur.xp) / span)) : 1,
         needsTeaching: !!(next && next.teachingHours && state.exchange.taught < next.teachingHours)
       };
+    },
+
+    /* One reward for agent-free practice or a confirmed meeting. Time in the app never calls this.
+       opts: { xp, stat, together (hours) }. Returns { rankedUp: rank or null } so the game layer (M7) can play Ascend. */
+    award: function (opts) {
+      var before = rankFor(state.xp, state.exchange.taught);
+      state.xp += opts.xp || 0;
+      if (opts.together) state.week.togetherHours = Math.round((state.week.togetherHours + opts.together) * 10) / 10;
+      if (opts.stat && state.stats[opts.stat] !== undefined) {
+        state.statPoints[opts.stat] += opts.xp || 0;
+        while (state.statPoints[opts.stat] >= LEVEL_POINTS && state.stats[opts.stat] < 10) {
+          state.statPoints[opts.stat] -= LEVEL_POINTS;
+          state.stats[opts.stat]++;
+        }
+      }
+      state.activityToday++;
+      var after = rankFor(state.xp, state.exchange.taught);
+      state.rank = after.id;
+      C.state.save();
+      return { rankedUp: after !== before ? after : null };
     },
 
     /* The end of the Awakening: save the choices and the starting stat levels. XP stays at 0. */
