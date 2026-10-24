@@ -288,7 +288,10 @@ C.data.train = {
       cook:       'Write a meal for tonight from what is in your kitchen, then work out the steps in order.',
       fit:        'Do ten minutes of moves you know by heart. Count your own reps and rest on your own clock.'
     },
-    fallback: 'Pick one thing you are learning and do it for five minutes with your agent put away.'
+    fallback: 'Pick one thing you are learning and do it for five minutes with your agent put away.',
+    /* The stat a quest nudges, by the type of rep (Section 7): working something out in your head is Thinking,
+       making or doing it with your hands and body is Doing. */
+    stat: { exam: 'thinking', language: 'thinking', code: 'thinking', job: 'thinking', instrument: 'doing', cook: 'doing', fit: 'doing' }
   },
 
   /* Solo Flights. stat: which stat the XP nudges. mark: the pre-written peer mark that arrives in the demo. */

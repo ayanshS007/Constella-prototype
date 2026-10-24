@@ -115,7 +115,8 @@ C.ui = (function () {
   }
 
   /* Lumen, the companion: a soft orb with two dot eyes and a halo. It never talks and has no speech bubble.
-     mood: 'calm' (default), 'bright' (agent-free activity today) or 'dim' (none yet). */
+     mood: 'calm' (default), 'bright' (an agent-free or in-person action today) or 'dim' (a whole day with none).
+     live: true marks a Lumen that reacts to the user's actions (C.game.react). */
   var lumenCount = 0;
   var MOODS = { calm: 'Lumen, your companion, glowing steadily', bright: 'Lumen, your companion, glowing brightly', dim: 'Lumen, your companion, resting dim' };
   function lumen(opts) {
@@ -123,7 +124,7 @@ C.ui = (function () {
     var mood = MOODS[opts.mood] ? opts.mood : 'calm';
     var size = opts.size || 64;
     var id = 'lm' + (++lumenCount);
-    var node = el('div', { class: 'lumen ' + mood + (opts.float === false ? '' : ' float'), role: 'img', 'aria-label': MOODS[mood] });
+    var node = el('div', { class: 'lumen ' + mood + (opts.float === false ? '' : ' float') + (opts.live ? ' live' : ''), role: 'img', 'aria-label': MOODS[mood] });
     node.style.width = node.style.height = size + 'px';
     node.innerHTML =
       '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
@@ -138,6 +139,14 @@ C.ui = (function () {
       '<circle cx="43" cy="50" r="0.9" fill="#fff"/><circle cx="59" cy="50" r="0.9" fill="#fff"/>' +
       '</svg>';
     return node;
+  }
+
+  /* Change a Lumen's glow in place; the CSS eases it, so a dimming Lumen fades gently. */
+  function setLumenMood(node, mood) {
+    if (!MOODS[mood]) return;
+    node.classList.remove('calm', 'bright', 'dim');
+    node.classList.add(mood);
+    node.setAttribute('aria-label', MOODS[mood]);
   }
 
   /* Rank badge: a hexagon with a star. The rank name and pips sit beside it, so rank never relies on the badge alone. */
@@ -157,5 +166,5 @@ C.ui = (function () {
     return node;
   }
 
-  return { el: el, icons: icons, toast: toast, modal: modal, lumen: lumen, rankBadge: rankBadge };
+  return { el: el, icons: icons, toast: toast, modal: modal, lumen: lumen, setLumenMood: setLumenMood, rankBadge: rankBadge };
 })();

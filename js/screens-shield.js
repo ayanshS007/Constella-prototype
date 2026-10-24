@@ -187,9 +187,7 @@ C.shield = (function () {
       var nLocked = ns === 'holding' || ns === 'paused';
 
       /* header and the top line */
-      root.appendChild(el('header', { class: 'train-head' },
-        el('p', { class: 'eyebrow', text: 'Shield' }),
-        el('h1', { text: 'Limits you set' })));
+      root.appendChild(H.screenHead('Shield', 'Limits you set', 'Only what you switch on. Nothing here earns XP.'));
 
       var anyOn = l.shieldOn || l.nightLockOn;
       var on = [];
@@ -528,11 +526,8 @@ C.shield = (function () {
     function draw() {
       cleanup();
       root.textContent = '';
-      root.appendChild(el('header', { class: 'train-head' },
-        el('p', { class: 'eyebrow', text: 'Shield · Night Watch' }),
-        el('h1', { text: 'Night Watch' }),
-        el('p', { class: 'small dim', text: 'Quiet late-night rooms with a person hosting. Agents can\'t join. Joining earns no XP.' })));
-      root.appendChild(H.button('Back to Shield', 'ghost compact', function () { nw.room = null; C.app.go('shield'); }, { icon: icons.back }));
+      root.appendChild(H.screenHead('Shield · Night Watch', 'Night Watch', 'Quiet late-night rooms with a person hosting. Agents can\'t join. Joining earns no XP.',
+        { label: 'Shield', onclick: function () { nw.room = null; C.app.go('shield'); } }));
 
       var room = nw.room && S.rooms.filter(function (r) { return r.id === nw.room; })[0];
       if (room) roomView(room);
@@ -550,7 +545,7 @@ C.shield = (function () {
             el('p', { class: 'small dim', text: r.when }),
             el('p', { class: 'small', text: r.line }),
             el('p', { class: 'small dim', text: 'Host: ' + r.host + ' · ' + left + (left === 1 ? ' seat' : ' seats') + ' left' })),
-          H.button('Join', 'primary compact', function () { nw.room = r.id; draw(); document.getElementById('view').scrollTop = 0; })));
+          H.button('Join', 'primary compact', function () { nw.room = r.id; C.state.touch(); draw(); document.getElementById('view').scrollTop = 0; })));
       });
 
       var c = S.crisis;
