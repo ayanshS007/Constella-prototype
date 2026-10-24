@@ -52,6 +52,7 @@ body::before {
   content: "";
   position: fixed; inset: 0; z-index: -2;
   background:
+    url("bg.webp") center / cover no-repeat,
     radial-gradient(60vmax 50vmax at 12% 18%, rgba(139, 108, 255, 0.20), transparent 70%),
     radial-gradient(55vmax 45vmax at 88% 30%, rgba(226, 91, 201, 0.14), transparent 70%),
     radial-gradient(60vmax 50vmax at 55% 95%, rgba(46, 211, 192, 0.12), transparent 70%),
