@@ -434,6 +434,7 @@ C.train = (function () {
     var skill = byId(T.flights.skills, item.skill);
     st.train.pending.splice(st.train.pending.indexOf(item), 1);
     applyScore(skill.mark);
+    T.flights.markers.forEach(function (n) { C.state.addStar(C.state.starId(n), n, 'Marked your ' + skill.label.toLowerCase() + ' paper'); });
     C.ui.toast(T.flights.markers.join(' and ') + ' marked your ' + skill.label.toLowerCase() + ' paper: ' + skill.mark + ' · unaided score ' + st.week.unaidedScore, 3800);
     if (C.app.current() === 'train') C.app.render('train', true);
   }
@@ -742,7 +743,10 @@ C.train = (function () {
     });
     ta.value = orb.view;
     var count = el('p', { class: 'small dim', id: 'gateCount' });
-    var enter = H.button('Enter the room', 'primary big', function () { orb.phase = 'room'; orb.raised = false; redraw(); }, { disabled: true });
+    var enter = H.button('Enter the room', 'primary big', function () {
+      C.state.addStar(C.state.starId(room.host), room.host, 'Practised in an Orbit: ' + room.topic);
+      orb.phase = 'room'; orb.raised = false; redraw();
+    }, { disabled: true });
     function refresh() {
       orb.view = ta.value;
       var n = lineCount(ta.value);
@@ -871,6 +875,7 @@ C.train = (function () {
       sim.awarded = true;
       var s = C.state.get();
       s.completed.simulators++;
+      f.notes.forEach(function (n) { C.state.addStar(C.state.starId(n.from), n.from, 'Practised a ' + f.label.toLowerCase()); });
       var res = C.state.award({ xp: C.state.XP.simulator, stat: 'relating' });
       reward(res, f.label + ' done · +' + C.state.XP.simulator + ' XP');
     }
@@ -904,5 +909,5 @@ C.train = (function () {
     open: function (tab) { orbTab = tab || 'orbits'; C.app.go('orbits'); }
   };
 
-  return { open: open, refreshStreak: refreshStreak, questDoneToday: questDoneToday, countdown: countdown };
+  return { open: open, refreshStreak: refreshStreak, questDoneToday: questDoneToday, countdown: countdown, tabs: tabs };
 })();

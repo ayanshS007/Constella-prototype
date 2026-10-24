@@ -898,3 +898,100 @@ body.still .finder .sweep { animation: none; top: 50%; }
 .night-wait { padding: 16px; border-radius: 14px; border: 1px solid var(--panel-line); background: var(--panel); }
 .night-live { max-width: 300px; min-height: 18px; }
 @media (max-height: 700px) { .nightcard { justify-content: flex-start; } }
+
+/* ======================================================================
+   M6: Earth Archive, Light Exchange, Landing Missions, Constellation, Privacy
+   ====================================================================== */
+
+.archive, .exchange, .missions, .constellation, .privacy { gap: 12px; }
+.map-head h1 + .small { margin-top: 2px; }
+
+/* ---------- S8 Earth Archive ---------- */
+
+.verdict {
+  display: inline-flex; flex: none; align-items: center; gap: 4px;
+  padding: 3px 12px 3px 8px; border-radius: 999px;
+  font-size: 13px; font-weight: 800; line-height: 1.4; color: #070B1F;
+}
+.verdict-ic { display: inline-flex; }
+.verdict-ic svg { width: 14px; height: 14px; stroke-width: 3; }
+.verdict.v-keep { background: var(--teal); }
+.verdict.v-adapt { background: var(--gold); }
+.verdict.v-drop { background: var(--ember); }
+.verdict-key { display: flex; flex-direction: column; gap: 8px; }
+.verdict-key .panel-h { margin-bottom: 2px; }
+.key-row { display: flex; align-items: center; gap: 10px; }
+.key-row .verdict { min-width: 72px; justify-content: center; }
+
+.entry { display: flex; flex-direction: column; gap: 10px; }
+.entry-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.entry-title { font-size: 17px; }
+.entry-row { display: flex; flex-direction: column; gap: 2px; }
+.entry-label { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--text-dim); }
+.entry .evidence { color: var(--text); font-weight: 600; }
+.entry-source { padding-top: 8px; border-top: 1px solid var(--panel-line); }
+.entry-proto { font-style: italic; }
+
+.elder { display: flex; flex-direction: column; gap: 8px; border-color: rgba(245, 196, 81, 0.4); box-shadow: 0 0 24px rgba(245, 196, 81, 0.1); }
+.elder-top { display: flex; align-items: center; gap: 10px; }
+.elder-quote { font-style: italic; line-height: 1.5; }
+.archive-foot { font-weight: 600; margin-top: 4px; }
+
+/* ---------- S10 Light Exchange ---------- */
+
+.balance { display: flex; flex-direction: column; gap: 2px; border-color: rgba(245, 196, 81, 0.4); box-shadow: 0 0 24px rgba(245, 196, 81, 0.1); }
+.balance-num { font-size: 40px; font-weight: 800; line-height: 1.1; color: var(--gold); font-variant-numeric: tabular-nums; text-shadow: 0 0 18px rgba(245, 196, 81, 0.45); }
+.offer-row { display: flex; align-items: center; gap: 12px; }
+.panel.offer-row { padding: 12px 14px; }
+.offer-btns { display: flex; align-items: center; gap: 8px; flex: none; }
+.session { display: flex; flex-direction: column; gap: 8px; }
+.session .offer-row { padding: 0; }
+.session.s-done { border-color: rgba(46, 211, 192, 0.5); }
+
+/* ---------- S11 Landing Missions ---------- */
+
+.mission { display: flex; flex-direction: column; gap: 10px; scroll-margin: 12px; }
+.mission:focus { outline: none; }
+.mission.focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(245, 196, 81, 0.5), 0 0 28px rgba(245, 196, 81, 0.25); }
+.mission.done { border-color: rgba(46, 211, 192, 0.5); }
+.mission .badges { margin: 4px 0 0; }
+.mission-done { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+
+/* ---------- S12 Constellation and ranks ---------- */
+
+.sky-panel { padding: 6px; }
+.sky-svg { display: block; width: 100%; height: auto; }
+.sky-dot { fill: #fff; }
+.sky-line { stroke: var(--teal); stroke-linecap: round; opacity: 0.85; filter: drop-shadow(0 0 3px rgba(46, 211, 192, 0.7)); }
+.sky-name { font-size: 12px; font-weight: 600; fill: var(--text); pointer-events: none; }
+.sky-name.me { fill: var(--gold); font-weight: 800; }
+.sky-star { cursor: pointer; outline: none; }
+.sky-star .st-ring { stroke: rgba(238, 241, 255, 0.3); stroke-width: 1.5; }
+.sky-star.met .st-ring { stroke: var(--teal); stroke-width: 2; }
+.sky-star .st-core { filter: drop-shadow(0 0 5px rgba(238, 241, 255, 0.9)); }
+.sky-star:hover .st-ring, .sky-star.picked .st-ring { stroke: var(--gold); stroke-width: 2.5; }
+.sky-star:focus-visible .st-ring { stroke: var(--gold); stroke-width: 3; stroke-dasharray: 4 3; }
+.star-detail { min-height: 64px; display: flex; flex-direction: column; gap: 8px; }
+.did-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+
+.ladder { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.rung { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.rung.here { border-color: var(--gold); box-shadow: 0 0 22px rgba(245, 196, 81, 0.25); }
+.rung-dot { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--panel-line); color: #070B1F; }
+.rung.reached .rung-dot { background: var(--gold); border-color: var(--gold); }
+.rung-dot svg { width: 16px; height: 16px; stroke-width: 3; }
+.rung-state { flex: none; font-weight: 700; color: var(--text-dim); }
+.rung.here .rung-state { color: var(--gold); }
+.rung.reached:not(.here) .rung-state { color: var(--teal); }
+
+/* ---------- S13 Privacy and settings ---------- */
+
+.know-list { margin: 0 0 10px; display: flex; flex-direction: column; gap: 10px; }
+.know-row { display: flex; flex-direction: column; gap: 1px; }
+.know-row dt { font-size: 13px; color: var(--text-dim); }
+.know-row dd { margin: 0; }
+.never-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.never-list li { display: flex; align-items: center; gap: 10px; }
+.never-ic { display: inline-flex; flex: none; color: var(--ember); }
+.danger-zone { border-color: rgba(255, 138, 92, 0.5); display: flex; flex-direction: column; gap: 10px; }
+.danger-zone .panel-h { margin-bottom: 0; }
