@@ -70,8 +70,8 @@ C.data = {
   awakening: {
     banner: 'Put your agent away. This one is just you.',
     thinking: {
-      prompt: 'Should a city close its centre to cars one day a month? Give your own view in three lines.',
-      lines: 3
+      prompt: 'Should a city close its centre to cars one day a month? Give your own view.',
+      minChars: 2
     },
     doing: {
       prompt: 'Three sums, in your head. No phone, no paper.',

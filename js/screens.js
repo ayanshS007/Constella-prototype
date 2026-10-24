@@ -211,12 +211,11 @@ C.screens = (function () {
       wrap.appendChild(el('label', { for: 'obThink', class: 'prompt', text: A.thinking.prompt }));
       wrap.appendChild(ta);
       wrap.appendChild(count);
-      function lines() { return ta.value.split('\n').filter(function (l) { return l.trim(); }).length; }
       function refresh() {
         ob.think = ta.value;
-        var n = lines();
-        count.textContent = 'Lines written: ' + Math.min(n, A.thinking.lines) + ' of ' + A.thinking.lines + '. Press Enter to start a new line.';
-        next.disabled = n < A.thinking.lines;
+        var n = ta.value.trim().length;
+        count.textContent = n < A.thinking.minChars ? 'Write a few words in your own voice to continue.' : 'Thanks. Tap Next task when you are ready.';
+        next.disabled = n < A.thinking.minChars;
       }
       ta.addEventListener('input', refresh);
       refresh();
