@@ -424,6 +424,7 @@ C.data.shield = {
     { id: '23:00', label: '11 pm' }
   ],
   lateClock: '11:30 pm',
+  dayClock: '10:30 am', /* where the demo clock returns after the Night Lock scene, so Home never shows the late time */
   /* Night Watch: quiet study rooms hosted by people. No phone numbers anywhere. */
   rooms: [
     { id: 'nw1', topic: 'Quiet study hour', host: 'Noor', when: 'Tonight, 11 pm to 1 am', joined: 5, size: 8,

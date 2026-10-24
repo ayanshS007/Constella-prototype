@@ -81,6 +81,7 @@ C.app = (function () {
     var top = keepScroll && current === route.id ? main.scrollTop : 0;
     current = route.id;
     if (!keepScroll && C.shield) C.shield.closeNightCard(); /* a new screen never sits under a stale Night Lock card */
+    if (route.id === 'home' && C.shield && C.people) C.shield.dayClock(); /* Home never shows the late demo time */
     main.textContent = '';
     main.scrollTop = 0;
     try {
