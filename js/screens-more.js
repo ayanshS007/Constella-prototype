@@ -27,19 +27,10 @@ C.more = (function () {
   }
 
   function head(eyebrow, title, sub) {
-    return el('header', { class: 'map-head' },
-      el('div', {},
-        el('p', { class: 'eyebrow', text: eyebrow }),
-        el('h1', { text: title }),
-        sub ? el('p', { class: 'small dim', text: sub }) : null),
-      el('button', { class: 'pill', type: 'button', onclick: function () { C.app.go('home'); } },
-        el('span', { html: icons.back }), el('span', { text: 'Home' })));
+    return H.screenHead(eyebrow, title, sub, { label: 'Home', onclick: function () { C.app.go('home'); } });
   }
 
-  /* The Ascend moment belongs to the game layer (M7); until then the toast names the new rank. */
-  function reward(res, message) {
-    C.ui.toast(message + (res && res.rankedUp ? ' · Rank up: ' + res.rankedUp.name : ''), 3800);
-  }
+  var reward = C.game.reward; /* a rank-up plays the Ascend moment by itself */
 
   function redrawIfOn(route) {
     if (C.app.current() === route) C.app.render(route, true);
@@ -258,7 +249,7 @@ C.more = (function () {
     } else {
       st.exchange.learned = round1(st.exchange.learned + 1);
       C.state.addStar(s.whoId, s.who, 'Learned ' + s.skill + ' from ' + s.who);
-      C.state.save();
+      C.state.touch(); /* an hour with a person: no XP for learning, but Lumen brightens */
       C.ui.toast('Session done · balance −1 h · learning an hour earns no XP', 3800);
     }
     redrawIfOn('exchange');

@@ -26,20 +26,9 @@ C.train = (function () {
     return null;
   }
 
-  function dayKey(d) {
-    d = d || new Date();
-    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
-  }
-
-  function dayGap(fromKey, toKey) {
-    var a = fromKey.split('-'), b = toKey.split('-');
-    return Math.round((Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 86400000);
-  }
-
-  /* Toast after an award. The Ascend moment itself belongs to the game layer (M7). */
-  function reward(res, message) {
-    C.ui.toast(message + (res && res.rankedUp ? ' · Rank up: ' + res.rankedUp.name : ''), 3800);
-  }
+  var dayKey = C.state.dayKey;
+  var dayGap = C.state.dayGap;
+  var reward = C.game.reward; /* a rank-up plays the Ascend moment by itself */
 
   function statLabel(id) { return byId(D.stats, id).label; }
 
@@ -158,10 +147,7 @@ C.train = (function () {
     function draw() {
       cleanup();
       root.textContent = '';
-      root.appendChild(el('header', { class: 'train-head' },
-        el('p', { class: 'eyebrow', text: 'Train' }),
-        el('h1', { text: 'Practise without your agent' }),
-        el('p', { class: 'small dim', text: 'XP comes only from agent-free reps. Time in the app earns nothing.' })));
+      root.appendChild(H.screenHead('Train', 'Practise without your agent', 'XP comes only from agent-free reps. Time in the app earns nothing.', C.game.lumen(52)));
       root.appendChild(tabs([
         { id: 'quest', label: 'Daily Quest' }, { id: 'flights', label: 'Solo Flights' }, { id: 'charts', label: 'Star Charts' }
       ], trainTab, select, 'Training'));
@@ -202,10 +188,14 @@ C.train = (function () {
         : '. Miss a day and the streak pauses. It never resets.' }));
   }
 
+  /* Quests nudge Doing or Thinking by the type of rep (Section 7). */
+  function questStat(st) { return T.quest.stat[st.user.goal] || 'doing'; }
+
   function questView(body, redraw) {
     var st = C.state.get();
     var goal = H.goalLabel(st.user.goal);
     var rep = T.quest.reps[st.user.goal] || T.quest.fallback;
+    var stat = questStat(st);
 
     body.appendChild(el('div', { class: 'panel quest' },
       el('div', { class: 'row-head' },
@@ -214,6 +204,7 @@ C.train = (function () {
       el('p', { class: 'small dim', text: goal ? 'For your goal: ' + goal : 'Pick a goal on Home to tailor this' }),
       el('p', { class: 'prompt', text: rep }),
       el('p', { class: 'small dim', text: 'The real quest is ' + T.quest.realMinutes + ' minutes. In this demo it runs ' + T.quest.demoSeconds + ' seconds.' }),
+      el('p', { class: 'small', text: '+' + C.state.XP.quest + ' XP · nudges ' + statLabel(stat) }),
       streakLine(st)));
 
     if (questDoneToday()) {
@@ -250,7 +241,7 @@ C.train = (function () {
       s.streak++;
       s.streakPaused = false;
       s.completed.quests++;
-      var res = C.state.award({ xp: C.state.XP.quest, stat: 'doing' });
+      var res = C.state.award({ xp: C.state.XP.quest, stat: stat });
       quest.phase = 'idle';
       reward(res, 'Daily Quest done · +' + C.state.XP.quest + ' XP · streak ' + s.streak + (s.streak === 1 ? ' day' : ' days'));
       redraw();
@@ -280,7 +271,7 @@ C.train = (function () {
     body.appendChild(el('div', { class: 'panel' },
       el('div', { class: 'row-head' }, el('h2', { class: 'panel-h tight', text: 'Solo Flights' }), demoTag('Demo speed')),
       el('p', { class: 'small', text: 'Do a real skill on paper, with no agent. Add a photo of your paper, then enter your score or send it for peer marking.' }),
-      el('p', { class: 'small dim' }, 'Your unaided score: ', el('strong', { class: 'sky-text', text: String(st.week.unaidedScore) }), ' (each flight moves it as a moving average). +' + C.state.XP.flight + ' XP per flight.')));
+      el('p', { class: 'small dim' }, 'Your unaided score: ', el('strong', { class: 'sky-text', text: String(st.week.unaidedScore) }), ' (each flight moves it as a moving average). +' + C.state.XP.flight + ' XP per flight, and each skill nudges Doing or Thinking.')));
 
     pendingList(body, redraw);
 
@@ -290,7 +281,7 @@ C.train = (function () {
       }, { disabled: !skill });
       body.appendChild(el('div', { class: 'choice-list', role: 'radiogroup', 'aria-label': 'Pick a skill' },
         T.flights.skills.map(function (s) {
-          return radioCard('skill', s.id, flight.skill === s.id, s.label, s.task, function (v) { flight.skill = v; go.disabled = false; });
+          return radioCard('skill', s.id, flight.skill === s.id, s.label + ' · ' + statLabel(s.stat), s.task, function (v) { flight.skill = v; go.disabled = false; });
         })));
       body.appendChild(go);
       return;
@@ -625,8 +616,9 @@ C.train = (function () {
         C.state.award({ xp: 0, points: 20, stat: 'persevering' }); /* prototype value: 20 points, 3 questions per level */
         run.note = 'You stayed with it without a hint. Persevering nudged up' + (s.stats.persevering > lvBefore ? ' to level ' + s.stats.persevering : '') + '.';
         C.ui.toast(run.note, 3800);
-      } else if (run.hints > 0) {
-        run.note = 'You used ' + run.hints + (run.hints === 1 ? ' hint' : ' hints') + '. That is what they are for. No nudge this time.';
+      } else {
+        if (run.hints > 0) run.note = 'You used ' + run.hints + (run.hints === 1 ? ' hint' : ' hints') + '. That is what they are for. No nudge this time.';
+        C.state.touch(); /* your own answer, written before the reveal: agent-free, so Lumen brightens */
       }
       if (timer) timer.stop();
       drawResult();
@@ -691,11 +683,8 @@ C.train = (function () {
     function draw() {
       cleanup();
       root.textContent = '';
-      root.appendChild(el('header', { class: 'train-head' },
-        el('p', { class: 'eyebrow', text: 'Train · with people' }),
-        el('h1', { text: 'Orbits and Simulators' }),
-        el('p', { class: 'small dim', text: 'People only. Agents can’t join these rooms.' })));
-      root.appendChild(H.button('Back to Train', 'ghost compact', function () { C.app.go('train'); }, { icon: icons.back }));
+      root.appendChild(H.screenHead('Train · with people', 'Orbits and Simulators', 'People only. Agents can’t join these rooms.',
+        { label: 'Train', onclick: function () { C.app.go('train'); } }));
       root.appendChild(tabs([{ id: 'orbits', label: 'Orbits' }, { id: 'simulators', label: 'Simulators' }], orbTab, select, 'Orbits and Simulators'));
       var panel = el('div', { class: 'tab-body', role: 'tabpanel', id: 'tabpanel', 'aria-labelledby': 'tab-' + orbTab });
       root.appendChild(panel);
@@ -745,6 +734,7 @@ C.train = (function () {
     var count = el('p', { class: 'small dim', id: 'gateCount' });
     var enter = H.button('Enter the room', 'primary big', function () {
       C.state.addStar(C.state.starId(room.host), room.host, 'Practised in an Orbit: ' + room.topic);
+      C.state.touch(); /* your own view, then a room of people: no XP, but Lumen brightens */
       orb.phase = 'room'; orb.raised = false; redraw();
     }, { disabled: true });
     function refresh() {

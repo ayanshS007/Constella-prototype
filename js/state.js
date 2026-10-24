@@ -22,7 +22,10 @@ window.C = window.C || {};
       rank: 'stardust',
       streak: 0,
       streakPaused: false, /* a missed day pauses the streak; it never drops to zero */
-      activityToday: 0, /* agent-free reps today; Lumen brightens when this is above 0 */
+      activityToday: 0, /* agent-free or in-person actions on lastActiveDay */
+      lastActiveDay: '', /* local date (yyyy-mm-dd) of the last agent-free or in-person action; Lumen reads it */
+      ascended: ['stardust'], /* ranks whose Ascend moment has played: once per rank */
+      demoWeek: false, /* the Demo control "Fill a demo week" has been applied */
       week: { agentHours: 31, assistedScore: 82, unaidedScore: 54, togetherHours: 0.5 },
       lastWeek: { agentHours: 33, assistedScore: 81, unaidedScore: 51, togetherHours: 0 }, /* for Your Echo */
       statPoints: { relating: 0, doing: 0, thinking: 0, persevering: 0 }, /* progress toward the next level of each stat */
@@ -79,6 +82,30 @@ window.C = window.C || {};
   var LEVEL_POINTS = 60; /* prototype value: XP-event points needed for +1 on a stat */
   var XP = { quest: 20, flight: 30, simulator: 40, meetingHour: 50, teachingHour: 60, mission: 80, appTime: 0 };
 
+  /* Local calendar days, so Lumen and the streak follow the phone's day. */
+  function dayKey(d) {
+    d = d || new Date();
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+
+  function dayGap(fromKey, toKey) {
+    var a = fromKey.split('-'), b = toKey.split('-');
+    return Math.round((Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 86400000);
+  }
+
+  /* Something done without the agent or with people. Lumen brightens; it earns nothing by itself. */
+  function markActive() {
+    var today = dayKey();
+    if (state.lastActiveDay !== today) { state.lastActiveDay = today; state.activityToday = 0; }
+    state.activityToday++;
+  }
+
+  function rankById(id) {
+    var ranks = C.data.ranks;
+    for (var i = 0; i < ranks.length; i++) if (ranks[i].id === id) return ranks[i];
+    return ranks[0];
+  }
+
   /* The rank for an XP total. Supernova also needs the teaching hours. */
   function rankFor(xp, taught) {
     var ranks = C.data.ranks, found = ranks[0];
@@ -112,8 +139,27 @@ window.C = window.C || {};
     },
 
     XP: XP,
+    LEVEL_POINTS: LEVEL_POINTS,
 
     rankFor: rankFor,
+    dayKey: dayKey,
+    dayGap: dayGap,
+
+    /* Lumen's glow: bright after an agent-free or in-person action today, calm the day after, and dim once a whole
+       day has passed with none. It never says anything about it. */
+    lumenMood: function () {
+      if (!state.lastActiveDay) return 'dim';
+      var gap = dayGap(state.lastActiveDay, dayKey());
+      return gap <= 0 ? 'bright' : gap === 1 ? 'calm' : 'dim';
+    },
+
+    /* An agent-free or in-person action that earns no XP (entering an Orbit, answering a Star Chart question, learning
+       an hour). Lumen still brightens. */
+    touch: function () {
+      markActive();
+      C.state.save();
+      if (C.game) C.game.react();
+    },
 
     /* Current rank, the next one, and how far along the XP bar the user is (0 to 1). */
     progress: function () {
@@ -130,9 +176,10 @@ window.C = window.C || {};
     },
 
     /* One reward for agent-free practice or a confirmed meeting. Time in the app never calls this.
-       opts: { xp, stat, together (hours), points (stat points when they differ from xp, e.g. a struggle timer with no XP) }. Returns { rankedUp: rank or null } so the game layer (M7) can play Ascend. */
+       opts: { xp, stat, together (hours), points (stat points when they differ from xp, e.g. a struggle timer with no XP) }.
+       Every XP event nudges one stat (Section 7). A rank-up plays the Ascend moment, once per rank. Returns { rankedUp: rank or null }. */
     award: function (opts) {
-      var before = rankFor(state.xp, state.exchange.taught);
+      var before = rankById(state.rank);
       state.xp += opts.xp || 0;
       if (opts.together) state.week.togetherHours = Math.round((state.week.togetherHours + opts.together) * 10) / 10;
       if (opts.stat && state.stats[opts.stat] !== undefined) {
@@ -141,12 +188,20 @@ window.C = window.C || {};
           state.statPoints[opts.stat] -= LEVEL_POINTS;
           state.stats[opts.stat]++;
         }
+        if (state.stats[opts.stat] >= 10) state.statPoints[opts.stat] = 0;
       }
-      state.activityToday++;
+      markActive();
       var after = rankFor(state.xp, state.exchange.taught);
       state.rank = after.id;
+      var rankedUp = C.data.ranks.indexOf(after) > C.data.ranks.indexOf(before) ? after : null;
+      var ascend = rankedUp && state.ascended.indexOf(after.id) < 0; /* the Ascend moment plays once per rank */
+      if (ascend) state.ascended.push(after.id);
       C.state.save();
-      return { rankedUp: after !== before ? after : null };
+      if (C.game) {
+        C.game.react();
+        if (ascend) C.game.ascend(after);
+      }
+      return { rankedUp: rankedUp };
     },
 
     /* A stable id for a person's first name, so the same person is one star wherever they turn up ("Tomás" and "tomas"). */
@@ -180,7 +235,8 @@ window.C = window.C || {};
       state.stats = result.stats;
       state.xp = 0;
       state.rank = 'stardust';
-      state.activityToday = Math.max(state.activityToday, 1); /* the Awakening is an agent-free rep */
+      state.ascended = ['stardust'];
+      markActive(); /* the Awakening is an agent-free rep */
       state.onboarded = true;
       C.state.save();
     },

@@ -1,27 +1,11 @@
 /* Constella prototype: one render function per screen. Each takes the <main> element.
-   M2 builds Welcome, Onboarding (with the Awakening) and Home. Every other screen is still a labelled
-   placeholder so the router, tab bar and Demo controls can be checked; later milestones replace them. */
+   This file builds Welcome, Onboarding (with the Awakening) and Home, and shares the helpers on C.helpers;
+   screens-people.js, screens-train.js, screens-shield.js and screens-more.js add the rest to C.screens. */
 window.C = window.C || {};
 
 C.screens = (function () {
   var el = C.ui.el;
   var icons = C.ui.icons;
-
-  var milestone = {
-    train: 'M4', orbits: 'M4',
-    shield: 'M5'
-  };
-
-  function placeholder(route) {
-    return function (main) {
-      main.appendChild(el('section', { class: 'screen' },
-        el('p', { class: 'eyebrow', text: route.code }),
-        el('h1', { text: route.label }),
-        el('div', { class: 'panel placeholder' },
-          el('p', { text: 'This screen is built in milestone ' + (milestone[route.id] || '?') + '.' }),
-          el('p', { class: 'dim', text: 'The shell around it (frame, starfield, tab bar, router, Demo controls) is live.' }))));
-    };
-  }
 
   /* ---------- shared helpers ---------- */
 
@@ -46,21 +30,44 @@ C.screens = (function () {
     }, label, extra && extra.icon ? el('span', { class: 'btn-ic', html: extra.icon }) : null);
   }
 
-  /* The four stats as labelled bars with a level, used on Home and on the Awakening result. */
-  function statRows(levels) {
+  /* The four stats as labelled bars with a level, used on Home and on the Awakening result.
+     points: progress toward each next level (Home), so a bar moves with every action, not only on a level-up.
+     On Home the bars grow from where they were last seen, and a level gained since then is called out. */
+  function statRows(levels, points) {
     return el('div', { class: 'stat-list' }, C.data.stats.map(function (def) {
       var lv = levels[def.id];
-      var bar = el('div', { class: 'bar', role: 'meter', 'aria-label': def.label + ' level', 'aria-valuemin': 1, 'aria-valuemax': 10, 'aria-valuenow': lv, 'aria-valuetext': 'Level ' + lv + ' of 10' },
-        el('div', { class: 'bar-fill', style: 'width:' + (lv * 10) + '%' }));
+      var part = points && lv < 10 ? Math.min(0.99, (points[def.id] || 0) / C.state.LEVEL_POINTS) : 0;
+      var frac = Math.min(1, (lv + part) / 10);
+      var key = 'stat-' + def.id;
+      var before = points ? C.game.lastSeen(key) : undefined;
+      var gained = before !== undefined ? lv - Math.floor(before * 10 + 1e-6) : 0;
+      var fill = points ? C.game.growFill(key, frac) : el('div', { class: 'bar-fill', style: 'width:' + (frac * 100) + '%' });
+      var bar = el('div', { class: 'bar', role: 'meter', 'aria-label': def.label + ' level', 'aria-valuemin': 1, 'aria-valuemax': 10, 'aria-valuenow': lv, 'aria-valuetext': 'Level ' + lv + ' of 10' }, fill);
       return el('div', { class: 'stat-row stat-' + def.cls },
         el('span', { class: 'stat-ic', html: icons[def.icon] }),
         el('div', { class: 'stat-body' },
           el('div', { class: 'stat-top' },
             el('span', { class: 'stat-name', text: def.label }),
-            el('span', { class: 'stat-lv', text: 'Level ' + lv })),
+            el('span', { class: 'stat-lv' + (gained > 0 ? ' up' : ''), text: 'Level ' + lv + (gained > 0 ? ' · up ' + gained : '') })),
           bar,
           el('span', { class: 'stat-line', text: def.line })));
     }));
+  }
+
+  /* The header every screen shares: eyebrow, title, an optional line, and an optional control on the right
+     (a back pill, a Lumen). back: { label, onclick }. */
+  function screenHead(eyebrow, title, sub, right) {
+    if (right && !right.nodeType) {
+      var b = right;
+      right = el('button', { class: 'pill', type: 'button', onclick: b.onclick },
+        el('span', { html: icons.back }), el('span', { text: b.label }));
+    }
+    return el('header', { class: 'screen-head' },
+      el('div', { class: 'screen-head-text' },
+        eyebrow ? el('p', { class: 'eyebrow', text: eyebrow }) : null,
+        el('h1', { text: title }),
+        sub ? el('p', { class: 'small dim', text: sub }) : null),
+      right || null);
   }
 
   /* ---------- S0 Welcome ---------- */
@@ -401,20 +408,17 @@ C.screens = (function () {
 
     /* Header: who, and Lumen in the corner, glowing by today's activity */
     main.appendChild(el('section', { class: 'screen home' },
-      el('header', { class: 'home-head' },
-        el('div', { class: 'home-who' },
-          el('p', { class: 'eyebrow', text: 'Status Window' }),
-          el('h1', { text: st.user.name }),
-          el('p', { class: 'small dim', text: goal ? 'Working toward: ' + goal : 'No goal chosen yet' })),
+      screenHead('Status Window', st.user.name, goal ? 'Working toward: ' + goal : 'No goal chosen yet',
         el('div', { class: 'home-tools' },
           el('button', { class: 'pill', type: 'button', onclick: openMore, 'aria-haspopup': 'dialog' },
             el('span', { html: icons.more }), el('span', { text: 'More' })),
-          C.ui.lumen({ size: 64, mood: st.activityToday > 0 ? 'bright' : 'dim' }))),
+          C.game.lumen(64))),
 
       rankPanel(st, prog),
       el('div', { class: 'panel' },
         el('h2', { class: 'panel-h', text: 'Your four stats' }),
-        statRows(st.stats)),
+        statRows(st.stats, st.statPoints),
+        el('p', { class: 'small dim stat-note', text: 'Each XP action nudges one stat: people lift Relating, quests and flights lift Doing or Thinking, a hard question with no hint lifts Persevering.' })),
       weekPanel(week),
       el('h2', { class: 'section-h', text: 'Today' }),
       questCard(st),
@@ -446,7 +450,7 @@ C.screens = (function () {
           el('p', { class: 'rank-name', text: cur.name }),
           pips)),
       el('div', { class: 'bar xp-bar', role: 'meter', 'aria-label': 'XP to next rank', 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': Math.round(prog.fraction * 100), 'aria-valuetext': barText },
-        el('div', { class: 'bar-fill', style: 'width:' + (prog.fraction * 100).toFixed(1) + '%' })),
+        C.game.growFill('xp-' + cur.id, prog.fraction)),
       el('p', { class: 'small xp-text', text: barText }),
       el('p', { class: 'small dim', text: 'XP comes only from what you do without your agent and with people. Time in the app earns nothing.' }));
   }
@@ -477,7 +481,7 @@ C.screens = (function () {
       el('span', { class: 'card-ic ember', html: icons.flame }),
       el('div', { class: 'card-body' },
         el('h3', { text: 'Daily Quest' }),
-        el('p', { class: 'small', text: done ? 'Done for today. +' + C.state.XP.quest + ' XP earned.' : goal ? 'A 5-minute rep for “' + goal + '”, without your agent.' : 'A 5-minute rep, without your agent.' }),
+        el('p', { class: 'small', text: done ? 'Done for today. +' + C.state.XP.quest + ' XP earned.' : goal ? 'A 5-minute rep for “' + goal + '”, without your agent. +' + C.state.XP.quest + ' XP.' : 'A 5-minute rep, without your agent. +' + C.state.XP.quest + ' XP.' }),
         el('p', { class: 'small streak' },
           el('strong', { text: 'Streak: ' + st.streak + (st.streak === 1 ? ' day' : ' days') }),
           el('span', { class: 'dim', text: st.streakPaused ? '. Paused: you missed a day, and it picks up where you left off.' : '. Miss a day and the streak pauses. It never resets.' }))),
@@ -509,10 +513,9 @@ C.screens = (function () {
   /* ---------- the screen table ---------- */
 
   /* Shared with the files that add screens in later milestones (plain scripts, one namespace). */
-  C.helpers = { button: button, goalLabel: goalLabel, hours: hours, delta: delta, statRows: statRows };
+  C.helpers = { button: button, goalLabel: goalLabel, hours: hours, delta: delta, statRows: statRows, screenHead: screenHead };
 
   var screens = {};
-  C.data.routes.forEach(function (r) { screens[r.id] = placeholder(r); });
   screens.welcome = welcome;
   screens.onboarding = onboarding;
   screens.home = home;

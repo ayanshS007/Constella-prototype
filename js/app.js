@@ -125,6 +125,7 @@ C.app = (function () {
   /* Back to the seed state and the Welcome screen. Used by Reset demo and by Delete everything (S13). */
   function resetAll(message) {
     C.state.reset();
+    C.game.forget();
     applyMotion(); applyClock();
     var motion = document.getElementById('motionSwitch');
     if (motion) motion.checked = !C.state.get().settings.reducedMotion;
@@ -165,15 +166,8 @@ C.app = (function () {
       if (current === 'privacy') render('privacy', true); /* its Reduced motion switch follows this one */
     });
 
-    function later(label, milestone) {
-      return el('button', {
-        class: 'demo-btn action', type: 'button', disabled: true,
-        title: 'Arrives in milestone ' + milestone
-      }, el('span', { text: label }), el('span', { class: 'code', text: milestone }));
-    }
-
-    function action(label, onclick) {
-      return el('button', { class: 'demo-btn action', type: 'button', onclick: onclick }, el('span', { text: label }));
+    function action(label, title, onclick) {
+      return el('button', { class: 'demo-btn action', type: 'button', title: title, onclick: onclick }, el('span', { text: label }));
     }
 
     var reset = el('button', {
@@ -186,9 +180,13 @@ C.app = (function () {
     panel.appendChild(jump);
     panel.appendChild(el('h2', { class: 'demo-h', text: 'Scenes' }));
     panel.appendChild(el('div', { class: 'demo-list' },
-      later('Fill a demo week', 'M7'),
-      action('Set time to 11:30 pm', function () { closeDemoOnPhone(); C.shield.setLateTime(); }),
-      later('Trigger Ascend', 'M7')));
+      action('Fill a demo week', 'A week of practice and meet-ups: together hours 4.5 h, unaided score 63, agent hours 24, rank Nebula',
+        function () { closeDemoOnPhone(); C.game.fillWeek(); }),
+      action('Set time to 11:30 pm', 'Shows the Night Lock card if Night Lock is on',
+        function () { closeDemoOnPhone(); C.shield.setLateTime(); }),
+      action('Trigger Ascend', 'Replays the Ascend moment for the current rank (from Stardust, it moves the demo to Nebula)',
+        function () { closeDemoOnPhone(); C.game.triggerAscend(); })));
+    panel.appendChild(el('p', { class: 'demo-hint', text: 'Fill a demo week shows a week of progress. Trigger Ascend replays the rank-up moment.' }));
     panel.appendChild(el('h2', { class: 'demo-h', text: 'Display' }));
     panel.appendChild(el('label', { class: 'demo-switch', for: 'motionSwitch' },
       el('span', { text: 'Motion' }), motion, el('span', { class: 'track', 'aria-hidden': 'true' })));

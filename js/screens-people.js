@@ -493,10 +493,7 @@ C.people = (function () {
     } });
     var chipHost = el('div', { class: 'chips', role: 'group', 'aria-label': 'Filter by goal' });
 
-    root.appendChild(el('header', { class: 'map-head' },
-      el('div', {},
-        el('p', { class: 'eyebrow', text: D.city.name }),
-        el('h1', { text: 'Star Map' })),
+    root.appendChild(H.screenHead(D.city.name, 'Star Map', '',
       el('button', { class: 'pill shoot', type: 'button', onclick: function () { C.app.go('shootingstar'); } },
         el('span', { html: icons.shoot }), el('span', { text: 'Shooting Star' }))));
     root.appendChild(el('div', { class: 'chips wrap' }, privChip, womenChip));
@@ -642,7 +639,7 @@ C.people = (function () {
       C.state.award({ xp: Math.round(C.state.XP.meetingHour * m.hours), stat: 'relating', together: m.hours });
       C.ui.toast('Meeting confirmed · +' + m.hours + ' together hours · +' + Math.round(C.state.XP.meetingHour * m.hours) + ' XP', 3600);
     } else {
-      C.state.save();
+      C.state.touch(); /* another confirmed face at the same meet-up: no more hours, but Lumen brightens */
       C.ui.toast(again ? 'Confirmed with ' + who.name + ' again. Hours count once per meet-up.' : 'Confirmed with ' + who.name + ' · a new line in your Constellation. Hours count once per meet-up.', 3600);
     }
     if (C.app.current() === 'crew') C.app.render('crew', true);
@@ -848,7 +845,7 @@ C.people = (function () {
       stack));
 
     /* Next meet-up and check-in */
-    var lumen = C.ui.lumen({ size: 56, mood: st.activityToday > 0 ? 'bright' : 'dim' });
+    var lumen = C.game.lumen(56);
     var scanBtn = H.button(st.crew.checkedIn ? 'Scan another member’s code' : 'Scan a crew member’s code', st.crew.checkedIn ? 'ghost' : 'primary', function () {
       openScan({ onConfirmed: function () { /* the screen redraws itself */ } });
     }, { icon: icons.scan });
@@ -941,12 +938,7 @@ C.people = (function () {
       setTimeout(showList, still ? 0 : 700);
     });
 
-    root.appendChild(el('header', { class: 'map-head' },
-      el('div', {},
-        el('p', { class: 'eyebrow', text: D.city.name }),
-        el('h1', { text: 'Shooting Star' })),
-      el('button', { class: 'pill', type: 'button', onclick: function () { C.app.go('map'); } },
-        el('span', { html: icons.back }), el('span', { text: 'Star Map' }))));
+    root.appendChild(H.screenHead(D.city.name, 'Shooting Star', '', { label: 'Star Map', onclick: function () { C.app.go('map'); } }));
     root.appendChild(el('div', { class: 'shoot-stage' }, streak, big));
     root.appendChild(el('p', { class: 'center dim', text: 'Press for public plans in the next 2 hours. Same list for everyone in your area.' }));
     root.appendChild(result);
