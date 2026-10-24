@@ -466,7 +466,7 @@ C.shield = (function () {
       wait = C.train.countdown(secs(S.coolingMinutes), 'Waiting ' + demoNote(S.coolingMinutes), function () {
         if (!document.body.contains(wait.node)) return;
         lift('night');
-        C.app.setClock('11:40 pm');
+        C.app.setClock(S.dayClock);
         closeNightCard();
         C.ui.toast('You waited it out. Night Lock is off. Switch it back on in Shield any time.', 4200);
         redrawShield();
@@ -607,5 +607,11 @@ C.shield = (function () {
   C.screens.shield = shield;
   C.screens.nightwatch = nightWatch;
 
-  return { setLateTime: setLateTime, showNightCard: showNightCard, closeNightCard: closeNightCard };
+  /* After the Night Lock scene (or a filled week) the demo clock goes back to the daytime. */
+  function dayClock() {
+    var m = C.people.clockMinutes();
+    if (m >= 21 * 60 || m < 5 * 60) C.app.setClock(S.dayClock);
+  }
+
+  return { dayClock: dayClock, setLateTime: setLateTime, showNightCard: showNightCard, closeNightCard: closeNightCard };
 })();
